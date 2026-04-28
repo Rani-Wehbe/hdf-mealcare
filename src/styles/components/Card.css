@@ -1,0 +1,25 @@
+/* ===== CARD COMPONENT ===== */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: var(--transition);
+}
+
+.card--flat {
+  box-shadow: none;
+  border: 1px solid var(--hdf-light);
+}
+
+.card--default {
+  box-shadow: var(--shadow);
+}
+
+.card--elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+.card--elevated:hover {
+  box-shadow: 0 12px 48px rgba(27, 43, 75, 0.2);
+  transform: translateY(-4px);
+}

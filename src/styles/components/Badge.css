@@ -1,0 +1,36 @@
+/* ===== BADGE COMPONENT ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.badge--default {
+  background: var(--hdf-light);
+  color: var(--hdf-navy);
+}
+
+.badge--success {
+  background: rgba(42, 123, 123, 0.15);
+  color: var(--hdf-teal);
+}
+
+.badge--warning {
+  background: rgba(184, 147, 58, 0.15);
+  color: var(--hdf-gold);
+}
+
+.badge--error {
+  background: rgba(140, 31, 40, 0.15);
+  color: var(--hdf-red);
+}
+
+.badge--info {
+  background: rgba(74, 94, 122, 0.15);
+  color: var(--hdf-mid);
+}

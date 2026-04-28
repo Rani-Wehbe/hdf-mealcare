@@ -1,0 +1,285 @@
+/* ===== PATIENT PAGE ===== */
+.patient-page {
+  animation: fadeIn 0.3s ease;
+}
+
+.patient-page__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.motivation-card {
+  background: linear-gradient(135deg, rgba(42, 123, 123, 0.08) 0%, rgba(184, 147, 58, 0.06) 100%);
+  border-left: 4px solid var(--hdf-teal);
+  padding: 20px;
+}
+
+.motivation-card__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.motivation-card__text {
+  font-size: 16px;
+  color: var(--hdf-navy);
+  font-style: italic;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.stat-card__content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.stat-card__icon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.stat-card__info {
+  flex: 1;
+}
+
+.stat-card__label {
+  font-size: 12px;
+  color: var(--hdf-mid);
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.stat-card__value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--hdf-navy);
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.meals-section {
+  margin-top: 24px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--hdf-navy);
+  margin: 0 0 20px 0;
+  font-weight: 600;
+}
+
+.meals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.meal-card {
+  display: flex;
+  flex-direction: column;
+  border-left: 4px solid var(--hdf-light);
+  transition: var(--transition);
+}
+
+.meal-card:hover {
+  transform: translateY(-4px);
+}
+
+.meal-card--completed {
+  border-left-color: var(--hdf-teal);
+  background: linear-gradient(135deg, rgba(42, 123, 123, 0.04) 0%, transparent 100%);
+}
+
+.meal-card--pending {
+  border-left-color: var(--hdf-gold);
+  background: linear-gradient(135deg, rgba(184, 147, 58, 0.06) 0%, transparent 100%);
+}
+
+.meal-card--upcoming {
+  border-left-color: var(--hdf-light);
+}
+
+.meal-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.meal-card__title-section {
+  flex: 1;
+}
+
+.meal-card__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--hdf-navy);
+  margin: 0 0 4px 0;
+}
+
+.meal-card__time {
+  font-size: 12px;
+  color: var(--hdf-mid);
+  display: block;
+}
+
+.meal-card__divider {
+  height: 1px;
+  background: var(--hdf-light);
+  margin: 12px 0;
+}
+
+.meal-card__items {
+  margin-bottom: 12px;
+}
+
+.meal-card__description {
+  font-size: 13px;
+  color: var(--hdf-mid);
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.meal-card__tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.meal-tag {
+  display: inline-block;
+  background: var(--hdf-light);
+  color: var(--hdf-mid);
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.meal-card__warning {
+  background: rgba(140, 31, 40, 0.1);
+  border-left: 2px solid var(--hdf-red);
+  padding: 8px 12px;
+  margin-top: 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--hdf-red);
+  font-weight: 500;
+}
+
+.meal-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--hdf-light);
+}
+
+.meal-card__calories {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--hdf-gold);
+}
+
+.dietary-notes {
+  margin-top: 24px;
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--hdf-navy);
+  margin: 0 0 16px 0;
+}
+
+.dietary-notes__content {
+  display: grid;
+  gap: 12px;
+}
+
+.dietary-note-item {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hdf-light);
+}
+
+.dietary-note-item:last-child {
+  border-bottom: none;
+}
+
+.dietary-note-label {
+  font-weight: 600;
+  color: var(--hdf-mid);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dietary-note-value {
+  color: var(--hdf-navy);
+  font-size: 14px;
+}
+
+.patient-page__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .patient-page__grid {
+    gap: 16px;
+  }
+
+  .meals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .patient-page__actions {
+    flex-direction: column;
+  }
+
+  .patient-page__actions button {
+    width: 100%;
+  }
+}

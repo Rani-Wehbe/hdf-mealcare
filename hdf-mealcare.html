@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HDF MealCare — Smart Nutrition System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== DESIGN TOKENS — Hôtel-Dieu de France palette ===== */
+:root {
+  --hdf-navy:    #1B2B4B;   /* deep institutional navy */
+  --hdf-gold:    #B8933A;   /* warm gold from HDF crest */
+  --hdf-cream:   #F7F3EE;   /* warm off-white */
+  --hdf-red:     #8C1F28;   /* burgundy-red accent */
+  --hdf-teal:    #2A7B7B;   /* medical teal */
+  --hdf-mid:     #4A5E7A;   /* mid-navy */
+  --hdf-light:   #D9E4F0;   /* pale blue-grey */
+  --hdf-warm:    #E8DDD0;   /* warm grey */
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 24px rgba(27,43,75,0.10);
+  --shadow-lg: 0 8px 40px rgba(27,43,75,0.16);
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--hdf-cream);
+  color: var(--hdf-navy);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--hdf-navy) 0%, var(--hdf-mid) 60%, #2A5080 100%);
+  position: relative;
+  overflow: hidden;
+}
+#login-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(184,147,58,0.18) 0%, transparent 60%);
+}
+.login-card {
+  background: rgba(247,243,238,0.97);
+  border-radius: var(--radius-lg);
+  padding: 48px 44px;
+  width: 420px;
+  max-width: 96vw;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.5s ease both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(24px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.login-logo {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 32px;
+}
+.login-logo img {
+  width: 56px; height: 56px; object-fit: contain; border-radius: 10px;
+  background: var(--hdf-light);
+}
+.login-logo-placeholder {
+  width: 56px; height: 56px; border-radius: 10px;
+  background: var(--hdf-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--hdf-mid); text-align: center;
+  font-weight: 500; line-height: 1.3; padding: 4px;
+  border: 2px dashed var(--hdf-gold);
+}
+.login-logo-text h1 { font-family: var(--font-display); font-size: 20px; color: var(--hdf-navy); line-height: 1.1; }
+.login-logo-text span { font-size: 12px; color: var(--hdf-mid); font-weight: 500; letter-spacing: 0.04em; }
+.login-subtitle { font-size: 13px; color: var(--hdf-mid); margin-bottom: 28px; }
+.role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
+.role-btn {
+  padding: 14px 10px;
+  border-radius: var(--radius);
+  border: 2px solid var(--hdf-light);
+  background: white;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hdf-navy);
+  transition: var(--transition);
+  display: flex; flex-direction: column; gap: 6px; align-items: center;
+}
+.role-btn .role-icon { font-size: 22px; }
+.role-btn:hover, .role-btn.active {
+  border-color: var(--hdf-gold);
+  background: linear-gradient(135deg, #fff8eb, #fff);
+  box-shadow: 0 2px 12px rgba(184,147,58,0.18);
+}
+.login-creds {
+  background: var(--hdf-light);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--hdf-mid);
+  margin-bottom: 20px;
+  display: none;
+}
+.login-creds.show { display: block; }
+.login-creds strong { color: var(--hdf-navy); }
+.btn-login {
+  width: 100%;
+  padding: 14px;
+  background: var(--hdf-navy);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+.btn-login:hover { background: var(--hdf-gold); }
+.gold-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--hdf-gold), var(--hdf-red));
+  border-radius: 2px;
+  margin: 24px 0 20px;
+}
+
+/* ===== APP SHELL ===== */
+#app { display: none; flex-direction: column; min-height: 100vh; }
+
+/* TOP NAV */
+.topnav {
+  background: var(--hdf-navy);
+  color: white;
+  padding: 0 28px;
+  height: 64px;
+  display: flex; align-items: center; gap: 20px;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 12px rgba(27,43,75,0.3);
+}
+.topnav-logo { display: flex; align-items: center; gap: 12px; }
+.topnav-logo-img {
+  width: 38px; height: 38px; border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: rgba(255,255,255,0.7); text-align: center;
+  line-height: 1.3; padding: 3px;
+  border: 1px dashed rgba(184,147,58,0.5);
+  overflow: hidden;
+}
+.topnav-logo-img img { width: 100%; height: 100%; object-fit: contain; }
+.topnav-title { font-family: var(--font-display); font-size: 18px; letter-spacing: 0.01em; }
+.topnav-title span { color: var(--hdf-gold); }
+.topnav-sep { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
+.nav-tabs { display: flex; gap: 2px; flex: 1; }
+.nav-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.65);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+  border: none; background: none;
+}
+.nav-tab:hover { color: white; background: rgba(255,255,255,0.08); }
+.nav-tab.active { color: white; background: rgba(184,147,58,0.25); }
+.nav-tab.active::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--hdf-gold);
+  border-radius: 1px;
+  margin-top: 4px;
+}
+.topnav-user {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 10px;
+}
+.user-badge {
+  background: rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  display: flex; align-items: center; gap: 8px;
+}
+.user-role-tag {
+  background: var(--hdf-gold);
+  color: var(--hdf-navy);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.btn-logout {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-logout:hover { background: rgba(140,31,40,0.3); color: white; border-color: var(--hdf-red); }
+
+/* ===== PANELS ===== */
+.panel { display: none; padding: 32px 28px; max-width: 1200px; margin: 0 auto; width: 100%; animation: fadeUp 0.3s ease both; }
+.panel.active { display: block; }
+
+/* ===== SHARED COMPONENTS ===== */
+.section-header { margin-bottom: 24px; }
+.section-header h2 { font-family: var(--font-display); font-size: 26px; color: var(--hdf-navy); }
+.section-header p { color: var(--hdf-mid); font-size: 14px; margin-top: 4px; }
+.gold-accent { color: var(--hdf-gold); }
+
+.card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(27,43,75,0.06);
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.card-title .icon { font-size: 20px; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.stat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--hdf-gold);
+}
+.stat-card.red  { border-left-color: var(--hdf-red); }
+.stat-card.teal { border-left-color: var(--hdf-teal); }
+.stat-card.navy { border-left-color: var(--hdf-navy); }
+.stat-num { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: var(--hdf-navy); }
+.stat-label { font-size: 12px; color: var(--hdf-mid); margin-top: 4px; font-weight: 500; }
+.stat-delta { font-size: 12px; margin-top: 8px; font-weight: 600; }
+.stat-delta.up { color: var(--hdf-teal); }
+.stat-delta.down { color: var(--hdf-red); }
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.badge-green { background: #e6f4ef; color: #1a7a52; }
+.badge-orange { background: #fef3e6; color: #c87420; }
+.badge-red { background: #fde8e8; color: #8c1f28; }
+.badge-blue { background: #e6eef8; color: #1b4080; }
+.badge-grey { background: #f0f0f0; color: #666; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+}
+.btn-primary { background: var(--hdf-navy); color: white; }
+.btn-primary:hover { background: var(--hdf-gold); }
+.btn-gold { background: var(--hdf-gold); color: white; }
+.btn-gold:hover { background: #a07828; }
+.btn-outline {
+  background: transparent;
+  color: var(--hdf-navy);
+  border: 1.5px solid var(--hdf-light);
+}
+.btn-outline:hover { border-color: var(--hdf-navy); }
+.btn-danger { background: var(--hdf-red); color: white; }
+.btn-teal { background: var(--hdf-teal); color: white; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* Alert bar */
+.alert-bar {
+  background: linear-gradient(90deg, #fff3cd, #fff9e6);
+  border-left: 4px solid var(--hdf-gold);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: #7a5a00;
+  display: flex; align-items: center; gap: 10px;
+}
+.alert-bar.danger {
+  background: linear-gradient(90deg, #fde8e8, #fff0f0);
+  border-left-color: var(--hdf-red);
+  color: #6b1212;
+}
+.alert-bar.success {
+  background: linear-gradient(90deg, #e6f4ef, #f0faf5);
+  border-left-color: var(--hdf-teal);
+  color: #145a3a;
+}
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th { background: var(--hdf-cream); color: var(--hdf-mid); font-weight: 600; padding: 10px 14px; text-align: left; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+.data-table td { padding: 12px 14px; border-bottom: 1px solid var(--hdf-cream); color: var(--hdf-navy); }
+.data-table tr:hover td { background: rgba(184,147,58,0.04); }
+
+/* Progress bar */
+.progress-wrap { background: var(--hdf-light); border-radius: 4px; height: 8px; overflow: hidden; }
+.progress-bar { height: 100%; border-radius: 4px; background: var(--hdf-teal); transition: width 0.5s ease; }
+.progress-bar.gold { background: var(--hdf-gold); }
+.progress-bar.red { background: var(--hdf-red); }
+
+/* ===========================
+   PATIENT PORTAL
+=========================== */
+.patient-greeting {
+  background: linear-gradient(135deg, var(--hdf-navy) 0%, #2A5080 100%);
+  border-radius: var(--radius-lg);
+  padding: 28px 32px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.patient-greeting::after {
+  content: '🍽️';
+  position: absolute;
+  right: 32px; top: 50%; transform: translateY(-50%);
+  font-size: 56px; opacity: 0.25;
+}
+.patient-greeting h2 { font-family: var(--font-display); font-size: 22px; margin-bottom: 4px; }
+.patient-greeting p { color: rgba(255,255,255,0.7); font-size: 14px; }
+.motivation-card {
+  background: linear-gradient(135deg, rgba(184,147,58,0.15), rgba(184,147,58,0.05));
+  border: 1px solid rgba(184,147,58,0.3);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-top: 16px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.9);
+  font-style: italic;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.motivation-card .quote-icon { color: var(--hdf-gold); font-size: 20px; line-height: 1; }
+
+.meal-time-tabs { display: flex; gap: 10px; margin-bottom: 24px; }
+.meal-time-tab {
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  border: 2px solid var(--hdf-light);
+  background: white;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+  color: var(--hdf-mid);
+}
+.meal-time-tab.active {
+  background: var(--hdf-navy); color: white; border-color: var(--hdf-navy);
+}
+.meal-time-tab .countdown { font-size: 10px; font-weight: 400; margin-top: 2px; opacity: 0.7; }
+
+.meal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.meal-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+.meal-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.meal-card.selected { border-color: var(--hdf-gold); }
+.meal-card.selected::after {
+  content: '✓';
+  position: absolute; top: 10px; right: 10px;
+  background: var(--hdf-gold); color: white;
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+}
+.meal-card.restricted { opacity: 0.5; cursor: not-allowed; }
+.meal-card.restricted::before {
+  content: 'Not Permitted';
+  position: absolute; inset: 0;
+  background: rgba(140,31,40,0.7);
+  color: white; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2; border-radius: var(--radius);
+}
+.meal-img {
+  height: 120px;
+  background: linear-gradient(135deg, var(--hdf-cream), var(--hdf-warm));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+}
+.meal-info { padding: 14px; }
+.meal-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.meal-desc { font-size: 11px; color: var(--hdf-mid); margin-bottom: 8px; }
+.meal-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.meal-tag { background: var(--hdf-light); color: var(--hdf-mid); font-size: 10px; padding: 2px 7px; border-radius: 10px; }
+
+.portion-selector { display: flex; gap: 8px; margin-top: 12px; }
+.portion-btn {
+  flex: 1; padding: 7px; border-radius: 8px;
+  border: 1.5px solid var(--hdf-light);
+  background: white; cursor: pointer;
+  font-size: 11px; font-weight: 600; color: var(--hdf-mid);
+  transition: var(--transition); text-align: center;
+}
+.portion-btn.active { border-color: var(--hdf-teal); background: #e6f4ef; color: var(--hdf-teal); }
+
+.feedback-stars { display: flex; gap: 4px; }
+.star { font-size: 28px; cursor: pointer; transition: var(--transition); filter: grayscale(1); }
+.star.lit { filter: none; }
+.star:hover { transform: scale(1.2); }
+
+/* Language switcher */
+.lang-switcher { display: flex; gap: 6px; margin-bottom: 16px; }
+.lang-btn { padding: 4px 12px; border-radius: 6px; border: 1px solid var(--hdf-light); background: white; font-size: 12px; cursor: pointer; transition: var(--transition); }
+.lang-btn.active { background: var(--hdf-navy); color: white; border-color: var(--hdf-navy); }
+
+/* ===========================
+   DIETITIAN PANEL
+=========================== */
+.patient-list { display: flex; flex-direction: column; gap: 0; }
+.patient-row {
+  display: grid; grid-template-columns: 200px 100px 120px 1fr 120px 100px;
+  align-items: center; padding: 14px 16px;
+  border-bottom: 1px solid var(--hdf-cream);
+  font-size: 13px; transition: var(--transition);
+  gap: 12px;
+}
+.patient-row:hover { background: rgba(184,147,58,0.03); }
+.patient-row-header { background: var(--hdf-cream); font-weight: 600; font-size: 11px; color: var(--hdf-mid); text-transform: uppercase; letter-spacing: 0.06em; border-radius: var(--radius) var(--radius) 0 0; }
+.appetite-bar { display: flex; align-items: center; gap: 8px; }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--hdf-red); display: inline-block; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:0.5; transform:scale(1.3)} }
+
+.diet-detail-panel {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid var(--hdf-light);
+}
+.diet-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--hdf-light); margin-bottom: 20px; }
+.diet-tab {
+  padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--hdf-mid);
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: var(--transition);
+}
+.diet-tab.active { color: var(--hdf-navy); border-bottom-color: var(--hdf-gold); }
+
+.trend-chart { height: 80px; display: flex; align-items: flex-end; gap: 6px; }
+.trend-bar { flex: 1; border-radius: 4px 4px 0 0; min-height: 8px; transition: var(--transition); }
+.trend-bar:hover { opacity: 0.8; }
+
+.approval-queue { display: flex; flex-direction: column; gap: 12px; }
+.approval-item {
+  display: flex; align-items: center; justify-content: space-between;
+  background: white; border-radius: var(--radius); padding: 14px 16px;
+  border: 1px solid var(--hdf-light); box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+}
+.approval-item.pending { border-left: 4px solid var(--hdf-gold); }
+
+/* ===========================
+   KITCHEN PANEL
+=========================== */
+.kitchen-header {
+  background: linear-gradient(135deg, #1a2a1a, #2a4a2a);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px;
+  color: white;
+  margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.live-dot { display: flex; align-items: center; gap: 8px; }
+.live-indicator { width: 10px; height: 10px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 0 0 rgba(74,222,128,0.4); animation: liveGlow 2s infinite; }
+@keyframes liveGlow { 0%{box-shadow:0 0 0 0 rgba(74,222,128,0.4)} 70%{box-shadow:0 0 0 10px transparent} 100%{box-shadow:0 0 0 0 transparent} }
+
+.meal-production-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.production-card {
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.production-card-header {
+  padding: 14px 16px;
+  background: var(--hdf-navy);
+  color: white;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.production-card-header h4 { font-size: 14px; font-weight: 600; }
+.portion-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.portion-count {
+  padding: 16px;
+  text-align: center;
+  border-right: 1px solid var(--hdf-cream);
+}
+.portion-count:last-child { border-right: none; }
+.portion-count-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--hdf-navy); }
+.portion-count-label { font-size: 10px; color: var(--hdf-mid); font-weight: 600; text-transform: uppercase; margin-top: 2px; }
+.production-status { padding: 12px 16px; border-top: 1px solid var(--hdf-cream); display: flex; justify-content: space-between; align-items: center; }
+
+.kitchen-timeline { display: flex; flex-direction: column; gap: 0; }
+.timeline-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 14px 0; border-bottom: 1px solid var(--hdf-cream);
+}
+.timeline-dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--hdf-light); display: flex; align-items: center;
+  justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px;
+}
+.timeline-dot.done { background: #e6f4ef; }
+.timeline-dot.active { background: var(--hdf-gold); }
+.timeline-content h4 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+.timeline-content p { font-size: 12px; color: var(--hdf-mid); }
+
+/* ===========================
+   ADMIN DASHBOARD
+=========================== */
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+
+.chart-area {
+  height: 180px;
+  display: flex; align-items: flex-end; gap: 8px;
+  padding: 0 4px;
+}
+.chart-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.chart-bar-wrap { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 2px; height: 140px; justify-content: flex-end; }
+.chart-bar { width: 100%; border-radius: 4px 4px 0 0; transition: 0.4s ease; }
+.chart-bar-group { width: 100%; display: flex; gap: 3px; justify-content: center; align-items: flex-end; }
+.chart-label { font-size: 10px; color: var(--hdf-mid); }
+
+.waste-donut {
+  position: relative; width: 140px; height: 140px; flex-shrink: 0;
+}
+.waste-donut svg { transform: rotate(-90deg); }
+.donut-center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.donut-center span { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--hdf-red); }
+.donut-center small { font-size: 10px; color: var(--hdf-mid); }
+
+.report-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--hdf-cream); font-size: 13px;
+}
+.report-icon { font-size: 22px; width: 36px; text-align: center; flex-shrink: 0; }
+
+/* Nurse assist overlay look */
+.nurse-overlay {
+  background: linear-gradient(135deg, #0a1a2a, #1b2b4b);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  color: white;
+  margin-bottom: 20px;
+}
+.patient-select-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }
+.patient-select-card {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+.patient-select-card:hover { border-color: var(--hdf-gold); background: rgba(184,147,58,0.15); }
+.patient-select-card.active { border-color: var(--hdf-gold); background: rgba(184,147,58,0.2); }
+.patient-select-card .room { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 4px; }
+.patient-select-card .name { font-weight: 600; font-size: 14px; }
+.patient-select-card .status { font-size: 11px; margin-top: 4px; }
+
+/* Modal */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(27,43,75,0.6);
+  z-index: 500; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius-lg); padding: 32px;
+  width: 480px; max-width: 96vw; box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.25s ease both;
+}
+.modal h3 { font-family: var(--font-display); font-size: 20px; margin-bottom: 16px; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+/* Input styles */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 12px; font-weight: 600; color: var(--hdf-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+.form-input {
+  width: 100%; padding: 10px 14px;
+  border: 1.5px solid var(--hdf-light);
+  border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 14px;
+  color: var(--hdf-navy); transition: var(--transition);
+}
+.form-input:focus { outline: none; border-color: var(--hdf-gold); }
+select.form-input { cursor: pointer; }
+textarea.form-input { resize: vertical; min-height: 80px; }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--hdf-navy); color: white;
+  padding: 14px 20px; border-radius: var(--radius);
+  font-size: 14px; box-shadow: var(--shadow-lg);
+  transform: translateY(80px); opacity: 0;
+  transition: all 0.3s ease; z-index: 999;
+  display: flex; align-items: center; gap: 10px;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.success { border-left: 4px solid var(--hdf-teal); }
+#toast.error { border-left: 4px solid var(--hdf-red); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: 1fr; }
+  .patient-row { grid-template-columns: 1fr 80px 80px; }
+  .patient-row > *:nth-child(n+4) { display: none; }
+  .nav-tab { padding: 8px 10px; font-size: 12px; }
+}
+@media (max-width: 600px) {
+  .topnav { padding: 0 14px; }
+  .panel { padding: 20px 14px; }
+  .kpi-strip { grid-template-columns: 1fr 1fr; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .meal-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<!-- ======================== LOGIN ======================== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-placeholder" id="login-logo-slot">
+        <img src="logo.png" onerror="this.parentElement.innerHTML='logo.png'" alt="HDF Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+      </div>
+      <div class="login-logo-text">
+        <h1>Hôtel-Dieu de France</h1>
+        <span>MealCare — Smart Nutrition System</span>
+      </div>
+    </div>
+    <p class="login-subtitle">Select your role to continue</p>
+    <div class="gold-bar"></div>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('patient')" id="role-patient">
+        <span class="role-icon">🛏️</span>
+        <span>Patient</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('nurse')" id="role-nurse">
+        <span class="role-icon">👩‍⚕️</span>
+        <span>Nurse</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('dietitian')" id="role-dietitian">
+        <span class="role-icon">🥗</span>
+        <span>Dietitian</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('kitchen')" id="role-kitchen">
+        <span class="role-icon">👨‍🍳</span>
+        <span>Kitchen</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('admin')" id="role-admin" style="grid-column:1/-1;">
+        <span class="role-icon">📊</span>
+        <span>Administration</span>
+      </button>
+    </div>
+    <div class="login-creds" id="creds-box"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In to MealCare →</button>
+    <p style="font-size:11px;color:var(--hdf-mid);margin-top:14px;text-align:center;">Demo credentials are shown above after selecting a role</p>
+  </div>
+</div>
+
+<!-- ======================== APP ======================== -->
+<div id="app">
+  <nav class="topnav">
+    <div class="topnav-logo">
+      <div class="topnav-logo-img">
+        <img src="logo.png" alt="HDF" onerror="this.parentElement.innerHTML='HDF'">
+      </div>
+      <div class="topnav-title">HDF <span>MealCare</span></div>
+    </div>
+    <div class="topnav-sep"></div>
+    <div class="nav-tabs" id="nav-tabs"></div>
+    <div class="topnav-user">
+      <div class="user-badge">
+        <span id="user-name-badge"></span>
+        <span class="user-role-tag" id="user-role-badge"></span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- ======== PATIENT PORTAL ======== -->
+  <div class="panel" id="panel-patient-meals">
+    <div class="patient-greeting">
+      <h2>Good morning, <span id="p-patient-name">Mireille Khoury</span> 🌿</h2>
+      <p>Room 214 · Ward B · Today is <span id="p-today-date"></span></p>
+      <div class="motivation-card">
+        <span class="quote-icon">✨</span>
+        <span id="motivation-msg">Every meal is a step toward your recovery. Small choices, big strength.</span>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en',this)">🇬🇧 EN</button>
+        <button class="lang-btn" onclick="setLang('ar',this)">🇱🇧 AR</button>
+        <button class="lang-btn" onclick="setLang('fr',this)">🇫🇷 FR</button>
+      </div>
+      <div style="font-size:13px;color:var(--hdf-mid);">
+        ⏰ Lunch deadline: <strong style="color:var(--hdf-red);" id="p-countdown">2h 15m</strong>
+      </div>
+    </div>
+
+    <div class="meal-time-tabs">
+      <button class="meal-time-tab active" onclick="switchMealTime('lunch',this)">🥗 Lunch<div class="countdown">Today · Deadline 10:00</div></button>
+      <button class="meal-time-tab" onclick="switchMealTime('dinner',this)">🌙 Dinner<div class="countdown">Today · Deadline 16:00</div></button>
+      <button class="meal-time-tab" onclick="switchMealTime('breakfast',this)">☀️ Breakfast<div class="countdown">Tomorrow · Deadline 21:00</div></button>
+    </div>
+
+    <div class="alert-bar" id="p-diet-notice" style="display:none;">
+      <span>⚠️</span> Your dietitian has noted a <strong>low-sodium diet</strong>. Some meals may be restricted.
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="icon">🍱</span> Choose Your Meal — Lunch</div>
+      <div class="meal-grid" id="meal-cards-grid"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;" id="portion-section" style="display:none;">
+      <div class="card-title"><span class="icon">⚖️</span> Portion Size</div>
+      <p style="font-size:13px;color:var(--hdf-mid);margin-bottom:12px;">Choose how much you'd like. Your dietitian may adjust this.</p>
+      <div class="portion-selector" style="max-width:360px;">
+        <button class="portion-btn" onclick="selectPortion('small',this)">🐣 Small</button>
+        <button class="portion-btn active" onclick="selectPortion('normal',this)">😋 Normal</button>
+        <button class="portion-btn" onclick="selectPortion('large',this)">💪 Large</button>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="icon">⭐</span> Rate Yesterday's Meal</div>
+      <p style="font-size:13px;color:var(--hdf-mid);margin-bottom:14px;">How was yesterday's lunch? Your feedback helps us improve.</p>
+      <div class="feedback-stars" id="stars-container">
+        <span class="star" onclick="rateMeal(1)">⭐</span>
+        <span class="star" onclick="rateMeal(2)">⭐</span>
+        <span class="star" onclick="rateMeal(3)">⭐</span>
+        <span class="star" onclick="rateMeal(4)">⭐</span>
+        <span class="star" onclick="rateMeal(5)">⭐</span>
+      </div>
+      <div style="margin-top:12px;">
+        <textarea class="form-input" placeholder="Any comments? (optional)" style="height:60px;"></textarea>
+      </div>
+      <button class="btn btn-primary" style="margin-top:10px;" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">🥜</span> My Preferences & Allergies</div>
+      <div class="grid-2">
+        <div>
+          <label class="form-label">Dietary Restrictions</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-red">⚠️ Nut Allergy</span>
+            <span class="badge badge-orange">🥛 Lactose Sensitive</span>
+            <span class="badge badge-blue">🧂 Low Sodium</span>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Food Preferences</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="badge badge-green">✓ Lebanese Cuisine</span>
+            <span class="badge badge-green">✓ Mediterranean</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== NURSE PANEL ======== -->
+  <div class="panel" id="panel-nurse-assist">
+    <div class="section-header">
+      <h2>Nurse <span class="gold-accent">Meal Assistance</span></h2>
+      <p>Select a patient to enter or modify their meal order on their behalf</p>
+    </div>
+
+    <div class="nurse-overlay">
+      <h3 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">Ward B — Patient List</h3>
+      <p style="color:rgba(255,255,255,0.6);font-size:13px;">7 patients · 3 pending meal selection</p>
+      <div class="patient-select-grid" id="nurse-patient-grid"></div>
+    </div>
+
+    <div id="nurse-meal-area" style="display:none;">
+      <div class="alert-bar success">
+        <span>👩‍⚕️</span> You are entering a meal order as <strong>Nurse Rima Haddad</strong> on behalf of <strong id="nurse-patient-label">—</strong>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-title"><span class="icon">🍱</span> Meal Selection for Patient</div>
+        <div class="meal-grid" id="nurse-meal-grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Nurse Notes</div>
+        <div class="form-group">
+          <label class="form-label">Observations</label>
+          <textarea class="form-input" placeholder="e.g., Patient has difficulty swallowing, please provide soft foods..."></textarea>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button class="btn btn-primary" onclick="nurseSubmitOrder()">✓ Submit Order</button>
+          <button class="btn btn-outline" onclick="cancelNurseOrder()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== DIETITIAN PANEL ======== -->
+  <div class="panel" id="panel-dietitian-patients">
+    <div class="section-header">
+      <h2>Patient <span class="gold-accent">Nutrition Dashboard</span></h2>
+      <p>Monitor meal selections, dietary compliance, and appetite trends</p>
+    </div>
+
+    <div class="alert-bar danger" style="margin-bottom:20px;">
+      <span>🔔</span> <strong>2 alerts:</strong> Patient in Room 218 hasn't eaten in 2 days · Patient in Room 211 lost 3kg this week
+    </div>
+
+    <div class="grid-2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="card-title"><span class="icon">📋</span> Approval Queue</div>
+        <div class="approval-queue" id="approval-queue"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📈</span> Ward Appetite Trends</div>
+        <p style="font-size:12px;color:var(--hdf-mid);margin-bottom:12px;">Average % of meal consumed over past 7 days</p>
+        <div class="trend-chart" id="diet-trend-chart"></div>
+        <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--hdf-mid);">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">👥</span> Patient List</div>
+      <div class="patient-row patient-row-header">
+        <div>Patient</div><div>Room</div><div>Diet Plan</div><div>Appetite</div><div>Last Meal</div><div>Action</div>
+      </div>
+      <div id="dietitian-patient-list" class="patient-list"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-dietitian-menus">
+    <div class="section-header">
+      <h2>Menu <span class="gold-accent">Management</span></h2>
+      <p>Approve, restrict, or modify menu items per patient or diet plan</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">🍽️</span> Menu Items</div>
+        <div id="menu-items-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">🛡️</span> Diet Plan Templates</div>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="diet-templates"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== KITCHEN PANEL ======== -->
+  <div class="panel" id="panel-kitchen-today">
+    <div class="kitchen-header">
+      <div>
+        <div class="live-dot">
+          <div class="live-indicator"></div>
+          <span style="font-size:12px;color:rgba(255,255,255,0.6);">LIVE DATA</span>
+        </div>
+        <h2 style="font-family:var(--font-display);font-size:22px;margin-top:4px;">Production Board</h2>
+        <p style="color:rgba(255,255,255,0.6);font-size:13px;margin-top:4px;">Lunch Service · <span id="k-order-count">47</span> orders confirmed</p>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:var(--font-display);font-size:36px;color:#4ade80;" id="k-clock"></div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.4);">Kitchen starts: 11:00</div>
+      </div>
+    </div>
+
+    <div class="alert-bar" style="margin-bottom:20px;">
+      <span>⚡</span> <strong>3 new updates</strong> since last refresh · 2 patients changed their order · 1 new dietary restriction added
+    </div>
+
+    <div class="meal-production-grid" id="production-grid"></div>
+
+    <div class="card" style="margin-top:24px;">
+      <div class="card-title"><span class="icon">📦</span> Service Timeline</div>
+      <div class="kitchen-timeline" id="kitchen-timeline"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-kitchen-waste">
+    <div class="section-header">
+      <h2>Waste <span class="gold-accent">Recording</span></h2>
+      <p>Record actual waste after each service to track and reduce overproduction</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">📝</span> Record Waste — Lunch</div>
+        <div id="waste-form-items"></div>
+        <div style="margin-top:16px;">
+          <label class="form-label">Notes</label>
+          <textarea class="form-input" placeholder="e.g., Larger portions resulted in more waste for Item 3..."></textarea>
+        </div>
+        <button class="btn btn-primary" style="margin-top:12px;" onclick="submitWaste()">Submit Waste Report</button>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📊</span> This Week's Waste</div>
+        <div class="chart-area" id="waste-chart"></div>
+        <div style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;">
+          <div><div style="font-family:var(--font-display);font-size:24px;color:var(--hdf-red);">18.4 kg</div><div style="font-size:12px;color:var(--hdf-mid);">Total waste this week</div></div>
+          <div><div style="font-family:var(--font-display);font-size:24px;color:var(--hdf-gold);">$142</div><div style="font-size:12px;color:var(--hdf-mid);">Estimated financial loss</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======== ADMIN PANEL ======== -->
+  <div class="panel" id="panel-admin-overview">
+    <div class="section-header">
+      <h2>Administration <span class="gold-accent">Overview</span></h2>
+      <p>Real-time KPIs, waste analytics, and system performance</p>
+    </div>
+
+    <div class="kpi-strip" id="admin-kpis"></div>
+
+    <div class="grid-2" style="margin-bottom:24px;">
+      <div class="card">
+        <div class="card-title"><span class="icon">🗑️</span> Food Waste Analysis</div>
+        <div style="display:flex;gap:20px;align-items:center;">
+          <div class="waste-donut">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="54" fill="none" stroke="#f0f0f0" stroke-width="16"/>
+              <circle cx="70" cy="70" r="54" fill="none" stroke="#8C1F28" stroke-width="16"
+                stroke-dasharray="67.8 271.2" stroke-linecap="round"/>
+              <circle cx="70" cy="70" r="54" fill="none" stroke="#B8933A" stroke-width="16"
+                stroke-dasharray="40.7 271.2" stroke-dashoffset="-67.8" stroke-linecap="round"/>
+            </svg>
+            <div class="donut-center">
+              <span>18%</span>
+              <small>avg waste</small>
+            </div>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                  <span>🔴 Overproduction</span><span style="font-weight:600;">25%</span>
+                </div>
+                <div class="progress-wrap"><div class="progress-bar red" style="width:25%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                  <span>🟡 Patient Plate Waste</span><span style="font-weight:600;">15%</span>
+                </div>
+                <div class="progress-wrap"><div class="progress-bar gold" style="width:15%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                  <span>🟢 Meals Consumed</span><span style="font-weight:600;">60%</span>
+                </div>
+                <div class="progress-wrap"><div class="progress-bar" style="width:60%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="icon">📈</span> Waste Trend (Last 7 Days)</div>
+        <div class="chart-area" id="admin-waste-chart"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title"><span class="icon">💡</span> Smart Insights</div>
+        <div style="display:flex;flex-direction:column;gap:12px;" id="smart-insights"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="icon">📄</span> Reports</div>
+        <div id="admin-reports"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-admin-analytics">
+    <div class="section-header">
+      <h2>Deep <span class="gold-accent">Analytics</span></h2>
+      <p>Patient satisfaction, meal performance, and demand predictions</p>
+    </div>
+    <div class="grid-3" style="margin-bottom:24px;">
+      <div class="stat-card teal">
+        <div class="stat-num">4.2 ★</div>
+        <div class="stat-label">Avg Patient Meal Rating</div>
+        <div class="stat-delta up">↑ +0.4 vs last month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">83%</div>
+        <div class="stat-label">Meal Selection Compliance</div>
+        <div class="stat-delta up">↑ +11% since launch</div>
+      </div>
+      <div class="stat-card red">
+        <div class="stat-num">$1,240</div>
+        <div class="stat-label">Monthly Waste Cost Saved</div>
+        <div class="stat-delta up">↑ Est. savings vs baseline</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-title"><span class="icon">🔮</span> Tomorrow's Demand Prediction</div>
+      <p style="font-size:13px;color:var(--hdf-mid);margin-bottom:16px;">AI-assisted forecast based on current pre-orders + historical patterns</p>
+      <div id="demand-prediction-table"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🏆</span> Success Metrics</div>
+      <div id="success-metrics"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ===== STATE =====
+let currentRole = null;
+let currentUser = null;
+let selectedMeal = null;
+let selectedPortion = 'normal';
+let selectedNursePatient = null;
+let nurseSelectedMeal = null;
+
+const ROLES = {
+  patient:   { label: 'Patient',    creds: 'Room 214 · No password needed', icon: '🛏️' },
+  nurse:     { label: 'Nurse',      creds: 'Username: nurse1 · Password: hdf2024', icon: '👩‍⚕️' },
+  dietitian: { label: 'Dietitian',  creds: 'Username: diet1 · Password: hdf2024', icon: '🥗' },
+  kitchen:   { label: 'Kitchen',    creds: 'Username: kitchen1 · Password: hdf2024', icon: '👨‍🍳' },
+  admin:     { label: 'Admin',      creds: 'Username: admin1 · Password: hdf2024', icon: '📊' }
+};
+
+const MOTIVATIONS = [
+  "Every meal is a step toward your recovery. Small choices, big strength.",
+  "Good nutrition is one of the most powerful tools in your healing journey.",
+  "Nourishing your body today helps you get back to what you love tomorrow.",
+  "Your strength grows with every bite. Keep going — you're doing great.",
+  "Healing takes time and care. Let each meal be an act of kindness to yourself."
+];
+
+const MEALS = [
+  { id:1, name:'Grilled Chicken Breast', emoji:'🍗', desc:'Lean protein with herb seasoning', tags:['Low-fat','High protein'], restricted: false },
+  { id:2, name:'Lebanese Lentil Soup', emoji:'🥣', desc:'Traditional mujadara with cumin', tags:['Vegetarian','Low-sodium'], restricted: false },
+  { id:3, name:'Grilled Sea Bass', emoji:'🐟', desc:'Fresh catch with lemon & thyme', tags:['Omega-3','Low-calorie'], restricted: false },
+  { id:4, name:'Stuffed Zucchini', emoji:'🫑', desc:'Kousa with rice and minced meat', tags:['Lebanese','Balanced'], restricted: false },
+  { id:5, name:'Fattoush Salad', emoji:'🥗', desc:'Fresh greens with pomegranate dressing', tags:['Vegan','Light'], restricted: false },
+  { id:6, name:'Lamb Ouzi', emoji:'🍖', desc:'Slow-cooked lamb with spiced rice', tags:['High-calorie'], restricted: true },
+];
+
+const PATIENTS = [
+  { id:1, name:'Mireille Khoury', room:'214', diet:'Low Sodium', appetite:72, lastMeal:'Lunch', alert:false, status:'Ordered' },
+  { id:2, name:'Georges Nassar', room:'215', diet:'Diabetic', appetite:45, lastMeal:'Breakfast', alert:false, status:'Pending' },
+  { id:3, name:'Fatima Al-Hassan', room:'216', diet:'Standard', appetite:88, lastMeal:'Lunch', alert:false, status:'Ordered' },
+  { id:4, name:'Pierre Karam',    room:'217', diet:'Soft Foods', appetite:30, lastMeal:'Dinner', alert:true, status:'Pending' },
+  { id:5, name:'Nada Saab',       room:'218', diet:'Low Calorie', appetite:15, lastMeal:'—', alert:true, status:'None' },
+  { id:6, name:'Rami Abi-Nader',  room:'219', diet:'High Protein', appetite:91, lastMeal:'Lunch', alert:false, status:'Ordered' },
+  { id:7, name:'Lara Sfeir',      room:'220', diet:'Standard', appetite:68, lastMeal:'Lunch', alert:false, status:'Pending' },
+];
+
+const PRODUCTION = [
+  { name:'Grilled Chicken Breast', small:8, normal:18, large:6, status:'In Progress', icon:'🍗' },
+  { name:'Lebanese Lentil Soup',   small:5, normal:12, large:3, status:'Ready',       icon:'🥣' },
+  { name:'Grilled Sea Bass',       small:3, normal:9,  large:4, status:'Prep',        icon:'🐟' },
+  { name:'Stuffed Zucchini',       small:4, normal:11, large:2, status:'Prep',        icon:'🫑' },
+  { name:'Fattoush Salad',         small:6, normal:8,  large:1, status:'Ready',       icon:'🥗' },
+];
+
+// ===== LOGIN =====
+function selectRole(role) {
+  currentRole = role;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('role-' + role).classList.add('active');
+  const creds = document.getElementById('creds-box');
+  creds.innerHTML = `<strong>${ROLES[role].icon} ${ROLES[role].label}:</strong> ${ROLES[role].creds}`;
+  creds.classList.add('show');
+}
+
+function doLogin() {
+  if (!currentRole) { showToast('Please select a role', 'error'); return; }
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('app').style.flexDirection = 'column';
+  setupRole(currentRole);
+}
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  currentRole = null;
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('creds-box').classList.remove('show');
+}
+
+// ===== ROLE SETUP =====
+function setupRole(role) {
+  const tabsEl = document.getElementById('nav-tabs');
+  tabsEl.innerHTML = '';
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+
+  const configs = {
+    patient: {
+      name: 'Mireille Khoury',
+      tabs: [{ id:'patient-meals', label:'🍱 My Meals' }]
+    },
+    nurse: {
+      name: 'Nurse Rima Haddad',
+      tabs: [{ id:'nurse-assist', label:'👩‍⚕️ Assist Patients' }]
+    },
+    dietitian: {
+      name: 'Dr. Sara Rizk',
+      tabs: [
+        { id:'dietitian-patients', label:'👥 Patients' },
+        { id:'dietitian-menus', label:'🍽️ Menus' }
+      ]
+    },
+    kitchen: {
+      name: 'Chef Marwan Bou',
+      tabs: [
+        { id:'kitchen-today', label:'📋 Today\'s Orders' },
+        { id:'kitchen-waste', label:'🗑️ Record Waste' }
+      ]
+    },
+    admin: {
+      name: 'Director Hala Khoury',
+      tabs: [
+        { id:'admin-overview', label:'📊 Overview' },
+        { id:'admin-analytics', label:'📈 Analytics' }
+      ]
+    }
+  };
+
+  const cfg = configs[role];
+  document.getElementById('user-name-badge').textContent = cfg.name;
+  document.getElementById('user-role-badge').textContent = ROLES[role].label;
+
+  cfg.tabs.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-tab' + (i===0?' active':'');
+    btn.textContent = t.label;
+    btn.onclick = () => switchPanel(t.id, btn);
+    tabsEl.appendChild(btn);
+    if (i===0) document.getElementById('panel-' + t.id).classList.add('active');
+  });
+
+  initPanel(role, cfg.tabs[0].id);
+}
+
+function switchPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('panel-' + id);
+  if (panel) panel.classList.add('active');
+  btn.classList.add('active');
+  initPanel(null, id);
+}
+
+function initPanel(role, panelId) {
+  if (panelId === 'patient-meals') initPatientMeals();
+  else if (panelId === 'nurse-assist') initNurseAssist();
+  else if (panelId === 'dietitian-patients') initDietitianPatients();
+  else if (panelId === 'dietitian-menus') initDietitianMenus();
+  else if (panelId === 'kitchen-today') initKitchenToday();
+  else if (panelId === 'kitchen-waste') initKitchenWaste();
+  else if (panelId === 'admin-overview') initAdminOverview();
+  else if (panelId === 'admin-analytics') initAdminAnalytics();
+}
+
+// ===== PATIENT =====
+function initPatientMeals() {
+  const today = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+  const el = document.getElementById('p-today-date');
+  if (el) el.textContent = today;
+  const mot = document.getElementById('motivation-msg');
+  if (mot) mot.textContent = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
+  const notice = document.getElementById('p-diet-notice');
+  if (notice) notice.style.display = 'flex';
+  renderMealCards('meal-cards-grid', false);
+  startCountdown();
+}
+
+function renderMealCards(containerId, isNurse) {
+  const grid = document.getElementById(containerId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  MEALS.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'meal-card' + (m.restricted?' restricted':'');
+    div.innerHTML = `
+      <div class="meal-img">${m.emoji}</div>
+      <div class="meal-info">
+        <div class="meal-name">${m.name}</div>
+        <div class="meal-desc">${m.desc}</div>
+        <div class="meal-tags">${m.tags.map(t=>`<span class="meal-tag">${t}</span>`).join('')}</div>
+      </div>`;
+    if (!m.restricted) {
+      div.onclick = () => {
+        document.querySelectorAll(`#${containerId} .meal-card`).forEach(c => c.classList.remove('selected'));
+        div.classList.add('selected');
+        if (isNurse) { nurseSelectedMeal = m; }
+        else {
+          selectedMeal = m;
+          document.getElementById('portion-section') && (document.getElementById('portion-section').style.display = 'block');
+        }
+        showToast(`Selected: ${m.name}`, 'success');
+      };
+    }
+    grid.appendChild(div);
+  });
+}
+
+function selectPortion(p, btn) {
+  selectedPortion = p;
+  document.querySelectorAll('.portion-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function switchMealTime(t, btn) {
+  document.querySelectorAll('.meal-time-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setLang(lang, btn) {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  showToast(`Language set to ${lang.toUpperCase()}`, 'success');
+}
+
+function rateMeal(n) {
+  document.querySelectorAll('#stars-container .star').forEach((s,i) => {
+    s.classList.toggle('lit', i < n);
+  });
+}
+
+function submitFeedback() {
+  showToast('Thank you for your feedback! ⭐', 'success');
+}
+
+let countdownTimer;
+function startCountdown() {
+  const el = document.getElementById('p-countdown');
+  if (!el) return;
+  let secs = 8100;
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    el.textContent = `${h}h ${m}m`;
+    if (--secs < 0) clearInterval(countdownTimer);
+  }, 1000);
+}
+
+// ===== NURSE =====
+function initNurseAssist() {
+  const grid = document.getElementById('nurse-patient-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  PATIENTS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'patient-select-card';
+    div.innerHTML = `<div class="room">Room ${p.room}</div><div class="name">${p.name}</div><div class="status">${p.status === 'Ordered' ? '<span style="color:#4ade80">✓ Ordered</span>' : '<span style="color:var(--hdf-gold)">⏳ Pending</span>'}</div>`;
+    div.onclick = () => selectNursePatient(p, div);
+    grid.appendChild(div);
+  });
+}
+
+function selectNursePatient(p, div) {
+  selectedNursePatient = p;
+  document.querySelectorAll('.patient-select-card').forEach(c => c.classList.remove('active'));
+  div.classList.add('active');
+  document.getElementById('nurse-meal-area').style.display = 'block';
+  document.getElementById('nurse-patient-label').textContent = `${p.name} (Room ${p.room})`;
+  renderMealCards('nurse-meal-grid', true);
+}
+
+function nurseSubmitOrder() {
+  if (!nurseSelectedMeal) { showToast('Please select a meal first', 'error'); return; }
+  showToast(`Order submitted for ${selectedNursePatient.name}: ${nurseSelectedMeal.name}`, 'success');
+  cancelNurseOrder();
+}
+function cancelNurseOrder() {
+  document.getElementById('nurse-meal-area').style.display = 'none';
+  selectedNursePatient = null;
+  nurseSelectedMeal = null;
+  document.querySelectorAll('.patient-select-card').forEach(c => c.classList.remove('active'));
+}
+
+// ===== DIETITIAN =====
+function initDietitianPatients() {
+  renderApprovalQueue();
+  renderDietTrendChart();
+  renderPatientList();
+}
+
+function renderApprovalQueue() {
+  const q = document.getElementById('approval-queue');
+  if (!q) return;
+  const items = [
+    { patient:'Georges Nassar', meal:'Lamb Ouzi', reason:'High-calorie, diabetic patient', room:'215' },
+    { patient:'Pierre Karam',   meal:'Fattoush Salad', reason:'Vinegar-based, check tolerance', room:'217' },
+  ];
+  q.innerHTML = items.map(it => `
+    <div class="approval-item pending">
+      <div>
+        <div style="font-weight:600;font-size:13px;">${it.patient} <span style="color:var(--hdf-mid);font-weight:400">· Rm ${it.room}</span></div>
+        <div style="font-size:12px;color:var(--hdf-mid);">Requested: ${it.meal}</div>
+        <div style="font-size:11px;color:var(--hdf-red);margin-top:2px;">⚠️ ${it.reason}</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-teal btn-sm" onclick="approveItem(this,'${it.patient}')">✓ Allow</button>
+        <button class="btn btn-danger btn-sm" onclick="denyItem(this,'${it.patient}')">✗ Deny</button>
+      </div>
+    </div>`).join('');
+}
+
+function approveItem(btn, name) {
+  btn.closest('.approval-item').style.opacity='0.4';
+  showToast(`Meal approved for ${name}`, 'success');
+}
+function denyItem(btn, name) {
+  btn.closest('.approval-item').style.opacity='0.4';
+  showToast(`Meal restricted for ${name}`, 'error');
+}
+
+function renderDietTrendChart() {
+  const c = document.getElementById('diet-trend-chart');
+  if (!c) return;
+  const vals = [62,58,70,75,65,80,78];
+  c.innerHTML = vals.map((v,i) => {
+    const h = Math.round(v * 0.8);
+    const col = v < 60 ? 'var(--hdf-red)' : v < 70 ? 'var(--hdf-gold)' : 'var(--hdf-teal)';
+    return `<div style="flex:1;background:${col};border-radius:3px 3px 0 0;height:${h}px;opacity:0.85;" title="${v}%"></div>`;
+  }).join('');
+}
+
+function renderPatientList() {
+  const list = document.getElementById('dietitian-patient-list');
+  if (!list) return;
+  list.innerHTML = PATIENTS.map(p => `
+    <div class="patient-row">
+      <div style="font-weight:600;">${p.alert?'<span class="alert-dot"></span> ':''}${p.name}</div>
+      <div>${p.room}</div>
+      <div><span class="badge badge-blue">${p.diet}</span></div>
+      <div class="appetite-bar">
+        <div class="progress-wrap" style="flex:1;"><div class="progress-bar ${p.appetite<40?'red':p.appetite<60?'gold':''}" style="width:${p.appetite}%"></div></div>
+        <span style="font-size:12px;width:32px;text-align:right;">${p.appetite}%</span>
+      </div>
+      <div style="color:var(--hdf-mid);">${p.lastMeal}</div>
+      <div><button class="btn btn-outline btn-sm" onclick="openPatientModal(${p.id})">Edit</button></div>
+    </div>`).join('');
+}
+
+function openPatientModal(id) {
+  const p = PATIENTS.find(x => x.id === id);
+  const overlay = document.getElementById('modal-overlay');
+  document.getElementById('modal-content').innerHTML = `
+    <h3>Edit Plan — ${p.name}</h3>
+    <div class="form-group"><label class="form-label">Diet Plan</label>
+      <select class="form-input"><option>${p.diet}</option><option>Standard</option><option>Diabetic</option><option>Low Sodium</option><option>High Protein</option><option>Soft Foods</option></select></div>
+    <div class="form-group"><label class="form-label">Portion Override</label>
+      <select class="form-input"><option>Patient Choice</option><option>Small Only</option><option>Normal Only</option><option>Large Recommended</option></select></div>
+    <div class="form-group"><label class="form-label">Dietitian Notes</label>
+      <textarea class="form-input" placeholder="Add clinical notes..."></textarea></div>
+    <div class="alert-bar" style="margin:0;"><span>📊</span> Avg appetite last 7 days: <strong>${p.appetite}%</strong></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePatientPlan('${p.name}')">Save Plan</button>
+    </div>`;
+  overlay.classList.add('show');
+}
+
+function savePatientPlan(name) {
+  closeModal();
+  showToast(`Plan updated for ${name}`, 'success');
+}
+
+function initDietitianMenus() {
+  const ml = document.getElementById('menu-items-list');
+  if (!ml) return;
+  ml.innerHTML = MEALS.map(m => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--hdf-cream);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:22px;">${m.emoji}</span>
+        <div>
+          <div style="font-weight:600;font-size:13px;">${m.name}</div>
+          <div style="font-size:11px;color:var(--hdf-mid);">${m.tags.join(' · ')}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="badge ${m.restricted?'badge-red':'badge-green'}">${m.restricted?'Restricted':'Approved'}</span>
+        <button class="btn btn-outline btn-sm" onclick="toggleMealStatus(this,'${m.name}',${m.restricted})">${m.restricted?'Approve':'Restrict'}</button>
+      </div>
+    </div>`).join('');
+
+  const dt = document.getElementById('diet-templates');
+  const templates = ['Standard', 'Diabetic (Low GI)', 'Low Sodium', 'High Protein', 'Soft Foods', 'Low Calorie'];
+  dt.innerHTML = templates.map(t => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--hdf-cream);border-radius:var(--radius);">
+      <span style="font-size:13px;font-weight:500;">${t}</span>
+      <button class="btn btn-outline btn-sm" onclick="showToast('Opening ${t} template...','success')">Edit</button>
+    </div>`).join('');
+}
+
+function toggleMealStatus(btn, name, restricted) {
+  showToast(`${name} status updated`, restricted ? 'success' : 'error');
+  initDietitianMenus();
+}
+
+// ===== KITCHEN =====
+function initKitchenToday() {
+  const grid = document.getElementById('production-grid');
+  if (!grid) return;
+  grid.innerHTML = PRODUCTION.map(p => {
+    const total = p.small + p.normal + p.large;
+    const statusColor = { 'Ready':'#4ade80', 'In Progress':'var(--hdf-gold)', 'Prep':'var(--hdf-mid)' }[p.status] || 'grey';
+    return `<div class="production-card">
+      <div class="production-card-header">
+        <h4>${p.icon} ${p.name}</h4>
+        <span style="font-size:12px;color:rgba(255,255,255,0.6);">Total: ${total}</span>
+      </div>
+      <div class="portion-counts">
+        <div class="portion-count"><div class="portion-count-num">${p.small}</div><div class="portion-count-label">Small</div></div>
+        <div class="portion-count"><div class="portion-count-num">${p.normal}</div><div class="portion-count-label">Normal</div></div>
+        <div class="portion-count"><div class="portion-count-num">${p.large}</div><div class="portion-count-label">Large</div></div>
+      </div>
+      <div class="production-status">
+        <span style="font-size:12px;color:var(--hdf-mid);">Status</span>
+        <span style="font-size:13px;font-weight:600;color:${statusColor};">● ${p.status}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const tl = document.getElementById('kitchen-timeline');
+  if (!tl) return;
+  const steps = [
+    { emoji:'✅', label:'Orders Received', time:'08:00', done:true },
+    { emoji:'✅', label:'Ingredients Prepared', time:'09:30', done:true },
+    { emoji:'🔥', label:'Cooking in Progress', time:'10:30', active:true },
+    { emoji:'⏳', label:'Plating & Packaging', time:'11:30', done:false },
+    { emoji:'🍽️', label:'Service Delivery', time:'12:00', done:false },
+    { emoji:'📊', label:'Waste Recording', time:'13:00', done:false },
+  ];
+  tl.innerHTML = steps.map(s => `
+    <div class="timeline-item">
+      <div class="timeline-dot ${s.done?'done':s.active?'active':''}">${s.emoji}</div>
+      <div class="timeline-content">
+        <h4>${s.label} ${s.active?'<span class="badge badge-orange">Now</span>':s.done?'<span class="badge badge-green">Done</span>':''}</h4>
+        <p>Scheduled: ${s.time}</p>
+      </div>
+    </div>`).join('');
+
+  startKitchenClock();
+}
+
+function startKitchenClock() {
+  const cl = document.getElementById('k-clock');
+  if (!cl) return;
+  function tick() {
+    const now = new Date();
+    cl.textContent = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+function initKitchenWaste() {
+  const f = document.getElementById('waste-form-items');
+  if (!f) return;
+  f.innerHTML = PRODUCTION.map(p => `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--hdf-cream);">
+      <span style="font-size:20px;width:28px;">${p.icon}</span>
+      <div style="flex:1;font-size:13px;font-weight:500;">${p.name}</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <input type="number" class="form-input" style="width:70px;padding:6px 10px;" min="0" placeholder="kg" value="${(Math.random()*2).toFixed(1)}">
+        <span style="font-size:12px;color:var(--hdf-mid);">kg wasted</span>
+      </div>
+    </div>`).join('');
+
+  const wc = document.getElementById('waste-chart');
+  if (!wc) return;
+  const vals = [3.2, 4.8, 2.1, 5.0, 3.8, 2.4, 1.8];
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const max = Math.max(...vals);
+  wc.innerHTML = vals.map((v,i) => `
+    <div class="chart-col">
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${Math.round(v/max*120)}px;background:${v>4?'var(--hdf-red)':v>3?'var(--hdf-gold)':'var(--hdf-teal)'};">&nbsp;</div>
+      </div>
+      <span class="chart-label">${days[i]}</span>
+    </div>`).join('');
+}
+
+function submitWaste() {
+  showToast('Waste report submitted to admin dashboard', 'success');
+}
+
+// ===== ADMIN =====
+function initAdminOverview() {
+  const kpi = document.getElementById('admin-kpis');
+  if (!kpi) return;
+  kpi.innerHTML = [
+    { num:'18%', label:'Avg Food Waste', delta:'↓ -6% vs last month', up:true, type:'' },
+    { num:'$2,840', label:'Monthly Waste Cost', delta:'↓ -$420 saved', up:true, type:'red' },
+    { num:'83%', label:'Order Compliance', delta:'↑ +11% since launch', up:true, type:'teal' },
+    { num:'4.2★', label:'Patient Satisfaction', delta:'↑ +0.4 stars', up:true, type:'navy' },
+  ].map(k => `<div class="stat-card ${k.type}">
+    <div class="stat-num">${k.num}</div>
+    <div class="stat-label">${k.label}</div>
+    <div class="stat-delta up">${k.delta}</div>
+  </div>`).join('');
+
+  const awc = document.getElementById('admin-waste-chart');
+  if (!awc) return;
+  const vals = [22,20,25,18,17,16,18];
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const max = Math.max(...vals);
+  awc.innerHTML = vals.map((v,i) => `
+    <div class="chart-col">
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${Math.round(v/max*140)}px;background:${v>22?'var(--hdf-red)':v>18?'var(--hdf-gold)':'var(--hdf-teal)'};">&nbsp;</div>
+      </div>
+      <span class="chart-label">${days[i]}</span>
+    </div>`).join('');
+
+  const si = document.getElementById('smart-insights');
+  if (!si) return;
+  const insights = [
+    { icon:'🔴', title:'High waste: Lamb Ouzi', text:'Consistently 35%+ waste this week. Consider reducing production by 20%.', type:'danger' },
+    { icon:'🟡', title:'Overproduction pattern: Fridays', text:'Friday lunches historically over-prepared by 12 portions on average.', type:'' },
+    { icon:'💡', title:'Portion recommendation', text:'Patients on soft food diet request small portions 78% of the time.', type:'' },
+    { icon:'✅', title:'Lentil Soup performing well', text:'Consistently <5% waste. High patient satisfaction. Consider adding to more services.', type:'success' },
+  ];
+  si.innerHTML = insights.map(i => `
+    <div class="alert-bar ${i.type}" style="margin:0;">
+      <span>${i.icon}</span>
+      <div>
+        <strong>${i.title}</strong><br>
+        <span style="font-size:12px;">${i.text}</span>
+      </div>
+    </div>`).join('');
+
+  const ar = document.getElementById('admin-reports');
+  if (!ar) return;
+  ar.innerHTML = [
+    { icon:'📊', title:'Weekly Waste Report', sub:'Generated: Today', badge:'badge-green', status:'Ready' },
+    { icon:'📋', title:'Monthly KPI Summary', sub:'Period: April 2026', badge:'badge-blue', status:'View' },
+    { icon:'🍽️', title:'Meal Performance Analysis', sub:'Last 30 days', badge:'badge-orange', status:'Processing' },
+    { icon:'💰', title:'Financial Loss Estimate', sub:'Q1 2026', badge:'badge-blue', status:'View' },
+  ].map(r => `
+    <div class="report-row">
+      <div class="report-icon">${r.icon}</div>
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:13px;">${r.title}</div>
+        <div style="font-size:11px;color:var(--hdf-mid);">${r.sub}</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="showToast('Opening report...','success')">${r.status}</button>
+    </div>`).join('');
+}
+
+function initAdminAnalytics() {
+  const dpt = document.getElementById('demand-prediction-table');
+  if (!dpt) return;
+  dpt.innerHTML = `<table class="data-table">
+    <thead><tr><th>Meal</th><th>Pre-orders</th><th>Predicted Total</th><th>Confidence</th><th>Rec. Produce</th></tr></thead>
+    <tbody>
+      ${PRODUCTION.map(p => {
+        const total = p.small+p.normal+p.large;
+        const pred = Math.round(total * (1 + Math.random()*0.15));
+        const conf = Math.round(80 + Math.random()*15);
+        return `<tr>
+          <td>${p.icon} ${p.name}</td>
+          <td>${total}</td>
+          <td><strong>${pred}</strong></td>
+          <td><span class="badge ${conf>90?'badge-green':conf>80?'badge-orange':'badge-red'}">${conf}%</span></td>
+          <td style="color:var(--hdf-teal);font-weight:600;">${Math.round(pred * 1.05)}</td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+
+  const sm = document.getElementById('success-metrics');
+  if (!sm) return;
+  const metrics = [
+    { label:'Reduction in Food Waste', target:'25%', current:'18%', progress:72 },
+    { label:'Financial Loss Reduction', target:'30%', current:'15%', progress:50 },
+    { label:'Patient Satisfaction Score', target:'4.5★', current:'4.2★', progress:93 },
+    { label:'Meal Consumption Rate', target:'85%', current:'78%', progress:92 },
+    { label:'Order Compliance Rate', target:'90%', current:'83%', progress:92 },
+  ];
+  sm.innerHTML = metrics.map(m => `
+    <div style="padding:12px 0;border-bottom:1px solid var(--hdf-cream);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;font-weight:500;">${m.label}</span>
+        <span style="font-size:12px;color:var(--hdf-mid);">${m.current} / <strong>${m.target}</strong></span>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar ${m.progress>85?'':'gold'}" style="width:${m.progress}%"></div></div>
+    </div>`).join('');
+}
+
+// ===== UTILITIES =====
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+let toastTimer;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = type === 'success' ? '✅  ' + msg : type === 'error' ? '❌  ' + msg : msg;
+  t.className = 'show ' + (type||'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = '', 2800);
+}
+
+// Init
+document.getElementById('p-today-date') && (document.getElementById('p-today-date').textContent = new Date().toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' }));
+</script>
+</body>
+</html>

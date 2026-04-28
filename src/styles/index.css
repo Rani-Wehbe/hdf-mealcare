@@ -1,0 +1,39 @@
+/* ===== DESIGN TOKENS — Hôtel-Dieu de France palette ===== */
+:root {
+  --hdf-navy:    #1B2B4B;   /* deep institutional navy */
+  --hdf-gold:    #B8933A;   /* warm gold from HDF crest */
+  --hdf-cream:   #F7F3EE;   /* warm off-white */
+  --hdf-red:     #8C1F28;   /* burgundy-red accent */
+  --hdf-teal:    #2A7B7B;   /* medical teal */
+  --hdf-mid:     #4A5E7A;   /* mid-navy */
+  --hdf-light:   #D9E4F0;   /* pale blue-grey */
+  --hdf-warm:    #E8DDD0;   /* warm grey */
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --shadow: 0 4px 24px rgba(27,43,75,0.10);
+  --shadow-lg: 0 8px 40px rgba(27,43,75,0.16);
+  --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--hdf-cream);
+  color: var(--hdf-navy);
+  overflow-x: hidden;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
