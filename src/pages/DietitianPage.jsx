@@ -3,76 +3,250 @@ import PageHeader from '../components/layout/PageHeader';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import { PATIENTS, MEALS } from '../data/demo';
 import '../styles/pages/DietitianPage.css';
 
 /**
  * Dietitian Dashboard Page
- * Create and manage personalized meal plans
+ * Nutrition planning, patient monitoring, and menu management
  */
 export default function DietitianPage() {
-  const [activeTab, setActiveTab] = useState('plans');
+  const [activeTab, setActiveTab] = useState('patients');
 
   return (
     <div className="dietitian-page">
-      <PageHeader
-        icon="🥗"
-        title="Meal Planning"
-        subtitle="Create and manage personalized meal plans for patients"
-        actions={
-          <Button variant="primary">
-            ➕ Create New Plan
-          </Button>
-        }
-      />
+      {/* Tab Navigation */}
+      <div className="dietitian-tabs">
+        <button
+          className={`tab-btn ${activeTab === 'patients' ? 'active' : ''}`}
+          onClick={() => setActiveTab('patients')}
+        >
+          👥 Patient Nutrition
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'menus' ? 'active' : ''}`}
+          onClick={() => setActiveTab('menus')}
+        >
+          🍽️ Menu Management
+        </button>
+      </div>
 
-      <div className="dietitian-page__grid">
-        {/* Tab Navigation */}
-        <div className="tabs">
-          <button
-            className={`tab-button ${activeTab === 'plans' ? 'active' : ''}`}
-            onClick={() => setActiveTab('plans')}
-          >
-            📋 Meal Plans
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'templates' ? 'active' : ''}`}
-            onClick={() => setActiveTab('templates')}
-          >
-            📑 Templates
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'ingredients' ? 'active' : ''}`}
-            onClick={() => setActiveTab('ingredients')}
-          >
-            🥬 Ingredients
-          </button>
+      {activeTab === 'patients' && <PatientNutritionTab />}
+      {activeTab === 'menus' && <MenuManagementTab />}
+    </div>
+  );
+}
+
+/**
+ * Patient Nutrition Tab
+ */
+function PatientNutritionTab() {
+  const trendData = [65, 70, 68, 75, 72, 78, 80];
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const maxTrend = Math.max(...trendData);
+
+  const pendingApprovals = [
+    {
+      id: 1,
+      patient: 'Pierre Karam',
+      room: '217',
+      request: 'Lamb Ouzi (restricted)',
+      diet: 'Soft Foods',
+      reason: 'Special occasion',
+    },
+    {
+      id: 2,
+      patient: 'Nada Saab',
+      room: '218',
+      request: 'Extra lentil soup',
+      diet: 'Low Calorie',
+      reason: 'Patient requested',
+    },
+  ];
+
+  return (
+    <div className="dietitian-section">
+      <div className="section-header">
+        <h2>
+          Patient <span className="gold-accent">Nutrition Dashboard</span>
+        </h2>
+        <p>Monitor meal selections, dietary compliance, and appetite trends</p>
+      </div>
+
+      {/* Alert Bar */}
+      <div className="alert-bar danger">
+        <span>🔔</span>
+        <div>
+          <strong>2 alerts:</strong> Patient in Room 218 hasn't eaten in 2 days · Patient in Room 211 lost 3kg this week
         </div>
+      </div>
 
-        {/* Content Sections */}
-        {activeTab === 'plans' && <MealPlansSection />}
-        {activeTab === 'templates' && <TemplatesSection />}
-        {activeTab === 'ingredients' && <IngredientsSection />}
+      {/* Main Grid */}
+      <div className="content-grid-2">
+        {/* Approval Queue */}
+        <Card elevation="elevated">
+          <div className="card-title">📋 Approval Queue</div>
+          <div className="approval-queue">
+            {pendingApprovals.map((approval) => (
+              <ApprovalItem key={approval.id} approval={approval} />
+            ))}
+          </div>
+        </Card>
 
-        {/* Nutrition Guidelines */}
-        <Card className="guidelines-card">
-          <h3 className="card-title">📋 Nutrition Guidelines</h3>
-          <div className="guidelines-content">
-            <div className="guideline-item">
-              <span className="guideline-label">Daily Calories:</span>
-              <span className="guideline-value">1,800 - 2,200 kcal</span>
-            </div>
-            <div className="guideline-item">
-              <span className="guideline-label">Protein:</span>
-              <span className="guideline-value">50 - 70g</span>
-            </div>
-            <div className="guideline-item">
-              <span className="guideline-label">Carbohydrates:</span>
-              <span className="guideline-value">225 - 325g</span>
-            </div>
-            <div className="guideline-item">
-              <span className="guideline-label">Fat:</span>
-              <span className="guideline-value">50 - 78g</span>
-            </div>
+        {/* Trend Chart */}
+        <Card elevation="elevated">
+          <div className="card-title">📈 Ward Appetite Trends</div>
+          <p className="chart-description">Average % of meal consumed over past 7 days</p>
+          <div className="trend-chart">
+            {trendData.map((val, idx) => (
+              <div key={idx} className="trend-bar-col">
+                <div className="trend-bar-wrapper">
+                  <div
+                    className="trend-bar"
+                    style={{
+                      height: `${Math.round((val / maxTrend) * 120)}px`,
+                      backgroundColor: val >= 75 ? '#2A7B7B' : val >= 65 ? '#B8933A' : '#8C1F28',
+                    }}
+                    title={`${val}%`}
+                  />
+                </div>
+                <span className="trend-label">{days[idx]}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Patient List */}
+      <Card elevation="elevated">
+        <div className="card-title">👥 Patient List</div>
+        <div className="patient-list-container">
+          <div className="patient-row-header">
+            <div className="col-patient">Patient</div>
+            <div className="col-room">Room</div>
+            <div className="col-diet">Diet Plan</div>
+            <div className="col-appetite">Appetite</div>
+            <div className="col-meal">Last Meal</div>
+            <div className="col-action">Action</div>
+          </div>
+
+          {PATIENTS.map((patient) => (
+            <PatientRow key={patient.id} patient={patient} />
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/**
+ * Approval Item Component
+ */
+function ApprovalItem({ approval }) {
+  const isRestricted = approval.request.includes('restricted');
+
+  return (
+    <div className={`approval-item ${isRestricted ? 'restricted' : ''}`}>
+      <div className="approval-header">
+        <div className="approval-patient">
+          <strong>{approval.patient}</strong>
+          <span className="approval-room">Room {approval.room}</span>
+        </div>
+        <Badge variant={isRestricted ? 'error' : 'warning'}>
+          {isRestricted ? '⛔ Restricted' : '⚠️ Pending'}
+        </Badge>
+      </div>
+      <div className="approval-request">{approval.request}</div>
+      <div className="approval-meta">
+        <span>{approval.diet}</span>
+        <span>•</span>
+        <span>{approval.reason}</span>
+      </div>
+      <div className="approval-actions">
+        <Button variant="primary" size="sm">
+          ✓ Approve
+        </Button>
+        <Button variant="secondary" size="sm">
+          ✗ Deny
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Patient Row in Nutrition List
+ */
+function PatientRow({ patient }) {
+  const getAppetiteColor = (appetite) => {
+    if (appetite >= 70) return '#2A7B7B';
+    if (appetite >= 40) return '#B8933A';
+    return '#8C1F28';
+  };
+
+  return (
+    <div className="patient-row">
+      <div className="col-patient">
+        {patient.alert && <span className="alert-indicator">🚨</span>}
+        {patient.name}
+      </div>
+      <div className="col-room">{patient.room}</div>
+      <div className="col-diet">{patient.diet}</div>
+      <div className="col-appetite">
+        <div className="appetite-mini" style={{ background: getAppetiteColor(patient.appetite) }}>
+          {patient.appetite}%
+        </div>
+      </div>
+      <div className="col-meal">{patient.lastMeal}</div>
+      <div className="col-action">
+        <Button variant="secondary" size="sm">
+          Edit Plan
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Menu Management Tab
+ */
+function MenuManagementTab() {
+  const dietTemplates = [
+    { name: 'Standard Diet', desc: 'Balanced nutrition, no restrictions', meals: 6 },
+    { name: 'Low Sodium', desc: 'Reduced salt intake', meals: 5 },
+    { name: 'Diabetic Diet', desc: 'Controlled carbs, balanced meals', meals: 6 },
+    { name: 'Soft Foods', desc: 'Easy to chew and digest', meals: 4 },
+    { name: 'Low Calorie', desc: 'Reduced portion sizes', meals: 5 },
+    { name: 'High Protein', desc: 'Muscle recovery focus', meals: 6 },
+  ];
+
+  return (
+    <div className="dietitian-section">
+      <div className="section-header">
+        <h2>
+          Menu <span className="gold-accent">Management</span>
+        </h2>
+        <p>Approve, restrict, or modify menu items per patient or diet plan</p>
+      </div>
+
+      <div className="content-grid-2">
+        {/* Menu Items */}
+        <Card elevation="elevated">
+          <div className="card-title">🍽️ Menu Items</div>
+          <div className="menu-items-list">
+            {MEALS.map((meal) => (
+              <MenuItem key={meal.id} meal={meal} />
+            ))}
+          </div>
+        </Card>
+
+        {/* Diet Plan Templates */}
+        <Card elevation="elevated">
+          <div className="card-title">🛡️ Diet Plan Templates</div>
+          <div className="diet-templates">
+            {dietTemplates.map((template, idx) => (
+              <TemplateItem key={idx} template={template} />
+            ))}
           </div>
         </Card>
       </div>
@@ -81,140 +255,55 @@ export default function DietitianPage() {
 }
 
 /**
- * Meal Plans Section Component
+ * Menu Item Component
  */
-function MealPlansSection() {
-  const plans = [
-    {
-      id: 1,
-      patientName: 'Mireille Khoury',
-      type: 'Low Sodium',
-      status: 'active',
-      startDate: '2026-04-28',
-      meals: 4,
-    },
-    {
-      id: 2,
-      patientName: 'Jean Dupont',
-      type: 'Diabetic',
-      status: 'active',
-      startDate: '2026-04-25',
-      meals: 3,
-    },
-    {
-      id: 3,
-      patientName: 'Marie Laurent',
-      type: 'Post-Surgery',
-      status: 'pending',
-      startDate: '2026-04-30',
-      meals: 3,
-    },
-  ];
+function MenuItem({ meal }) {
+  const [restricted, setRestricted] = React.useState(meal.restricted);
 
   return (
-    <div className="meals-plans-section">
-      <h2 className="section-title">Active Meal Plans</h2>
-      <div className="plans-grid">
-        {plans.map((plan) => (
-          <Card key={plan.id} className="plan-card" elevation="elevated">
-            <div className="plan-card__header">
-              <div>
-                <h4 className="plan-card__patient">{plan.patientName}</h4>
-                <p className="plan-card__type">{plan.type}</p>
-              </div>
-              <Badge variant={plan.status === 'active' ? 'success' : 'warning'}>
-                {plan.status === 'active' ? '✓ Active' : '⏳ Pending'}
-              </Badge>
-            </div>
+    <div className={`menu-item ${restricted ? 'restricted' : ''}`}>
+      <div className="menu-item-header">
+        <div className="menu-item-title">
+          <span className="menu-emoji">{meal.emoji}</span>
+          <div className="menu-info">
+            <h4>{meal.name}</h4>
+            <p>{meal.desc}</p>
+          </div>
+        </div>
+        {restricted && <Badge variant="error">🚫 Restricted</Badge>}
+      </div>
 
-            <div className="plan-card__details">
-              <div className="detail">
-                <span className="detail-label">Started:</span>
-                <span className="detail-value">{plan.startDate}</span>
-              </div>
-              <div className="detail">
-                <span className="detail-label">Daily Meals:</span>
-                <span className="detail-value">{plan.meals}</span>
-              </div>
-            </div>
-
-            <div className="plan-card__actions">
-              <Button variant="secondary" size="sm">
-                Edit
-              </Button>
-              <Button variant="ghost" size="sm">
-                View
-              </Button>
-            </div>
-          </Card>
+      <div className="menu-item-tags">
+        {meal.tags.map((tag, idx) => (
+          <span key={idx} className="menu-tag">
+            {tag}
+          </span>
         ))}
       </div>
+
+      <Button
+        variant={restricted ? 'secondary' : 'primary'}
+        size="sm"
+        onClick={() => setRestricted(!restricted)}
+      >
+        {restricted ? '🔓 Unrestrict' : '🔒 Restrict'}
+      </Button>
     </div>
   );
 }
 
 /**
- * Templates Section Component
+ * Diet Template Item
  */
-function TemplatesSection() {
-  const templates = [
-    { id: 1, name: 'Low Sodium Diet', meals: 4, calories: 1800 },
-    { id: 2, name: 'Diabetic Diet', meals: 3, calories: 1500 },
-    { id: 3, name: 'Post-Surgery Recovery', meals: 3, calories: 1600 },
-    { id: 4, name: 'Mediterranean Diet', meals: 4, calories: 2000 },
-  ];
-
+function TemplateItem({ template }) {
   return (
-    <div className="templates-section">
-      <h2 className="section-title">Diet Templates</h2>
-      <div className="templates-grid">
-        {templates.map((template) => (
-          <Card key={template.id} className="template-card">
-            <h4 className="template-card__name">{template.name}</h4>
-            <div className="template-card__info">
-              <span>🍽️ {template.meals} meals</span>
-              <span>🔥 {template.calories} kcal</span>
-            </div>
-            <Button variant="secondary" size="sm">
-              Use Template
-            </Button>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Ingredients Section Component
- */
-function IngredientsSection() {
-  const ingredients = [
-    { id: 1, name: 'Chicken Breast', category: 'Protein', unit: 'g' },
-    { id: 2, name: 'Brown Rice', category: 'Carbs', unit: 'g' },
-    { id: 3, name: 'Broccoli', category: 'Vegetable', unit: 'g' },
-    { id: 4, name: 'Olive Oil', category: 'Fat', unit: 'ml' },
-    { id: 5, name: 'Salmon', category: 'Protein', unit: 'g' },
-    { id: 6, name: 'Sweet Potato', category: 'Carbs', unit: 'g' },
-  ];
-
-  return (
-    <div className="ingredients-section">
-      <h2 className="section-title">Available Ingredients</h2>
-      <div className="ingredients-grid">
-        {ingredients.map((ingredient) => (
-          <Card key={ingredient.id} className="ingredient-card">
-            <div className="ingredient-card__header">
-              <h4 className="ingredient-card__name">{ingredient.name}</h4>
-              <Badge variant="info">{ingredient.category}</Badge>
-            </div>
-            <p className="ingredient-card__unit">Unit: {ingredient.unit}</p>
-            <Button variant="ghost" size="sm">
-              Add to Plan
-            </Button>
-          </Card>
-        ))}
-      </div>
+    <div className="template-item">
+      <div className="template-name">{template.name}</div>
+      <div className="template-desc">{template.desc}</div>
+      <div className="template-meta">{template.meals} meals/day</div>
+      <Button variant="secondary" size="sm">
+        View
+      </Button>
     </div>
   );
 }

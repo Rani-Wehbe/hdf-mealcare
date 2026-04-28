@@ -3,324 +3,355 @@ import PageHeader from '../components/layout/PageHeader';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import { PRODUCTION } from '../data/demo';
 import '../styles/pages/AdminPage.css';
 
 /**
  * Admin Dashboard Page
- * System management, settings, users, and reports
+ * System overview, analytics, and reporting
  */
 export default function AdminPage() {
-  const [activeTab, setActiveTab] = useState('users');
+  const [activeTab, setActiveTab] = useState('overview');
 
   return (
     <div className="admin-page">
-      <PageHeader
-        icon="⚙️"
-        title="System Administration"
-        subtitle="Manage system settings, users, and generate reports"
-        actions={
-          <Button variant="primary">
-            ⚙️ Settings
-          </Button>
-        }
-      />
-
-      <div className="admin-page__grid">
-        {/* Tab Navigation */}
-        <div className="admin-tabs">
-          <button
-            className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-            onClick={() => setActiveTab('users')}
-          >
-            👥 Users
-          </button>
-          <button
-            className={`admin-tab ${activeTab === 'roles' ? 'active' : ''}`}
-            onClick={() => setActiveTab('roles')}
-          >
-            🔐 Roles & Permissions
-          </button>
-          <button
-            className={`admin-tab ${activeTab === 'reports' ? 'active' : ''}`}
-            onClick={() => setActiveTab('reports')}
-          >
-            📊 Reports
-          </button>
-          <button
-            className={`admin-tab ${activeTab === 'system' ? 'active' : ''}`}
-            onClick={() => setActiveTab('system')}
-          >
-            🛠️ System
-          </button>
-        </div>
-
-        {/* Content Sections */}
-        {activeTab === 'users' && <UsersSection />}
-        {activeTab === 'roles' && <RolesSection />}
-        {activeTab === 'reports' && <ReportsSection />}
-        {activeTab === 'system' && <SystemSection />}
+      {/* Tab Navigation */}
+      <div className="admin-tabs">
+        <button
+          className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('overview')}
+        >
+          📊 Overview
+        </button>
+        <button
+          className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analytics')}
+        >
+          📈 Analytics
+        </button>
       </div>
+
+      {activeTab === 'overview' && <OverviewTab />}
+      {activeTab === 'analytics' && <AnalyticsTab />}
     </div>
   );
 }
 
 /**
- * Users Management Section
+ * Overview Tab - KPIs and Waste Analysis
  */
-function UsersSection() {
-  const users = [
+function OverviewTab() {
+  const kpis = [
+    { num: '18%', label: 'Avg Food Waste', delta: '↓ -6% vs last month', type: '' },
+    { num: '$2,840', label: 'Monthly Waste Cost', delta: '↓ -$420 saved', type: 'red' },
+    { num: '83%', label: 'Order Compliance', delta: '↑ +11% since launch', type: 'teal' },
+    { num: '4.2★', label: 'Patient Satisfaction', delta: '↑ +0.4 stars', type: 'navy' },
+  ];
+
+  const wasteData = [22, 20, 25, 18, 17, 16, 18];
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const maxWaste = Math.max(...wasteData);
+
+  const insights = [
     {
-      id: 1,
-      name: 'Dr. Sophie Laurent',
-      email: 'sophie@hdf.fr',
-      role: 'Nurse',
-      status: 'active',
-      joinDate: '2024-01-15',
+      icon: '🔴',
+      title: 'High waste: Lamb Ouzi',
+      text: 'Consistently 35%+ waste this week. Consider reducing production by 20%.',
+      type: 'danger',
     },
     {
-      id: 2,
-      name: 'Jean Moreau',
-      email: 'jean@hdf.fr',
-      role: 'Dietitian',
-      status: 'active',
-      joinDate: '2024-02-20',
+      icon: '🟡',
+      title: 'Overproduction pattern: Fridays',
+      text: 'Friday lunches historically over-prepared by 12 portions on average.',
+      type: '',
     },
     {
-      id: 3,
-      name: 'Kitchen Staff',
-      email: 'kitchen@hdf.fr',
-      role: 'Kitchen',
-      status: 'active',
-      joinDate: '2024-03-10',
+      icon: '💡',
+      title: 'Portion recommendation',
+      text: 'Patients on soft food diet request small portions 78% of the time.',
+      type: '',
     },
     {
-      id: 4,
-      name: 'Inactive User',
-      email: 'inactive@hdf.fr',
-      role: 'Patient',
-      status: 'inactive',
-      joinDate: '2023-12-01',
+      icon: '✅',
+      title: 'Lentil Soup performing well',
+      text: 'Consistently <5% waste. High patient satisfaction. Consider adding to more services.',
+      type: 'success',
     },
   ];
 
-  return (
-    <div className="users-section">
-      <div className="section-header">
-        <h2 className="section-title">👥 User Management</h2>
-        <Button variant="primary">➕ Add User</Button>
-      </div>
-
-      <div className="users-table">
-        <div className="table-header">
-          <div className="table-cell">Name</div>
-          <div className="table-cell">Email</div>
-          <div className="table-cell">Role</div>
-          <div className="table-cell">Status</div>
-          <div className="table-cell">Join Date</div>
-          <div className="table-cell">Actions</div>
-        </div>
-
-        {users.map((user) => (
-          <div key={user.id} className="table-row">
-            <div className="table-cell">{user.name}</div>
-            <div className="table-cell">{user.email}</div>
-            <div className="table-cell">
-              <Badge variant="info">{user.role}</Badge>
-            </div>
-            <div className="table-cell">
-              <Badge
-                variant={user.status === 'active' ? 'success' : 'warning'}
-              >
-                {user.status === 'active' ? '✓ Active' : 'Inactive'}
-              </Badge>
-            </div>
-            <div className="table-cell">{user.joinDate}</div>
-            <div className="table-cell">
-              <Button variant="ghost" size="sm">
-                Edit
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Roles & Permissions Section
- */
-function RolesSection() {
-  const roles = [
-    {
-      id: 1,
-      name: 'Patient',
-      description: 'View own meals and dietary info',
-      permissions: ['view_meals', 'view_profile', 'request_meal'],
-    },
-    {
-      id: 2,
-      name: 'Nurse',
-      description: 'Monitor patient compliance',
-      permissions: ['view_patients', 'edit_notes', 'generate_reports'],
-    },
-    {
-      id: 3,
-      name: 'Dietitian',
-      description: 'Create meal plans',
-      permissions: ['create_plans', 'manage_ingredients', 'view_analytics'],
-    },
-    {
-      id: 4,
-      name: 'Kitchen Staff',
-      description: 'Manage meal preparation',
-      permissions: ['view_orders', 'update_status', 'print_labels'],
-    },
-  ];
-
-  return (
-    <div className="roles-section">
-      <h2 className="section-title">🔐 Roles & Permissions</h2>
-      <div className="roles-grid">
-        {roles.map((role) => (
-          <Card key={role.id} className="role-card">
-            <h4 className="role-card__title">{role.name}</h4>
-            <p className="role-card__description">{role.description}</p>
-
-            <div className="permissions-list">
-              <p className="permissions-label">Permissions:</p>
-              {role.permissions.map((perm, idx) => (
-                <div key={idx} className="permission-item">
-                  <span className="permission-checkbox">✓</span>
-                  <span className="permission-name">{perm}</span>
-                </div>
-              ))}
-            </div>
-
-            <Button variant="secondary" size="sm">
-              Edit Role
-            </Button>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/**
- * Reports Section
- */
-function ReportsSection() {
   const reports = [
-    {
-      id: 1,
-      name: 'Daily Meal Compliance',
-      description: 'Patient meal adherence for the day',
-      frequency: 'Daily',
-    },
-    {
-      id: 2,
-      name: 'Nutritional Analysis',
-      description: 'Weekly nutritional metrics',
-      frequency: 'Weekly',
-    },
-    {
-      id: 3,
-      name: 'Kitchen Efficiency',
-      description: 'Meal preparation metrics',
-      frequency: 'Monthly',
-    },
-    {
-      id: 4,
-      name: 'System Audit',
-      description: 'User activity and access logs',
-      frequency: 'Monthly',
-    },
+    { icon: '📊', title: 'Weekly Waste Report', sub: 'Generated: Today', badge: 'green', status: 'Ready' },
+    { icon: '📋', title: 'Monthly KPI Summary', sub: 'Period: April 2026', badge: 'blue', status: 'View' },
+    { icon: '🍽️', title: 'Meal Performance Analysis', sub: 'Last 30 days', badge: 'orange', status: 'Processing' },
+    { icon: '💰', title: 'Financial Loss Estimate', sub: 'Q1 2026', badge: 'blue', status: 'View' },
   ];
 
   return (
-    <div className="reports-section">
-      <h2 className="section-title">📊 Reports</h2>
-      <div className="reports-grid">
-        {reports.map((report) => (
-          <Card key={report.id} className="report-card">
-            <h4 className="report-card__title">{report.name}</h4>
-            <p className="report-card__description">{report.description}</p>
+    <div className="admin-section">
+      <div className="section-header">
+        <h2>
+          Administration <span className="gold-accent">Overview</span>
+        </h2>
+        <p>Real-time KPIs, waste analytics, and system performance</p>
+      </div>
 
-            <div className="report-info">
-              <span className="report-frequency">
-                🔄 {report.frequency}
-              </span>
-            </div>
-
-            <div className="report-actions">
-              <Button variant="secondary" size="sm">
-                View Report
-              </Button>
-              <Button variant="ghost" size="sm">
-                Download
-              </Button>
-            </div>
-          </Card>
+      {/* KPI Cards */}
+      <div className="kpi-grid">
+        {kpis.map((kpi, idx) => (
+          <div key={idx} className={`stat-card ${kpi.type}`}>
+            <div className="stat-num">{kpi.num}</div>
+            <div className="stat-label">{kpi.label}</div>
+            <div className="stat-delta up">{kpi.delta}</div>
+          </div>
         ))}
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="content-grid-2">
+        {/* Waste Analysis */}
+        <Card elevation="elevated">
+          <div className="card-title">🗑️ Food Waste Analysis</div>
+          <div className="waste-analysis">
+            <div className="donut-chart">
+              <svg width="140" height="140" viewBox="0 0 140 140">
+                <circle cx="70" cy="70" r="54" fill="none" stroke="#f0f0f0" strokeWidth="16" />
+                <circle
+                  cx="70"
+                  cy="70"
+                  r="54"
+                  fill="none"
+                  stroke="#8C1F28"
+                  strokeWidth="16"
+                  strokeDasharray="67.8 271.2"
+                  strokeLinecap="round"
+                />
+                <circle
+                  cx="70"
+                  cy="70"
+                  r="54"
+                  fill="none"
+                  stroke="#B8933A"
+                  strokeWidth="16"
+                  strokeDasharray="40.7 271.2"
+                  strokeDashoffset="-67.8"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="donut-center">
+                <span>18%</span>
+                <small>avg waste</small>
+              </div>
+            </div>
+
+            <div className="waste-breakdown">
+              <div className="breakdown-item">
+                <div className="breakdown-label">
+                  <span className="indicator red">●</span> Overproduction
+                </div>
+                <span className="breakdown-value">25%</span>
+              </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: '25%', backgroundColor: '#8C1F28' }} />
+              </div>
+
+              <div className="breakdown-item">
+                <div className="breakdown-label">
+                  <span className="indicator gold">●</span> Patient Plate Waste
+                </div>
+                <span className="breakdown-value">15%</span>
+              </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: '15%', backgroundColor: '#B8933A' }} />
+              </div>
+
+              <div className="breakdown-item">
+                <div className="breakdown-label">
+                  <span className="indicator green">●</span> Meals Consumed
+                </div>
+                <span className="breakdown-value">60%</span>
+              </div>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{ width: '60%' }} />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Waste Trend Chart */}
+        <Card elevation="elevated">
+          <div className="card-title">📈 Waste Trend (Last 7 Days)</div>
+          <div className="chart-area">
+            {wasteData.map((val, idx) => (
+              <div key={idx} className="chart-col">
+                <div className="chart-bar-wrapper">
+                  <div
+                    className="chart-bar"
+                    style={{
+                      height: `${Math.round((val / maxWaste) * 140)}px`,
+                      backgroundColor: val > 22 ? '#8C1F28' : val > 18 ? '#B8933A' : '#2A7B7B',
+                    }}
+                  />
+                </div>
+                <span className="chart-label">{days[idx]}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Insights and Reports */}
+      <div className="content-grid-2">
+        {/* Smart Insights */}
+        <Card elevation="elevated">
+          <div className="card-title">💡 Smart Insights</div>
+          <div className="insights-list">
+            {insights.map((insight, idx) => (
+              <div key={idx} className={`insight-item ${insight.type}`}>
+                <span className="insight-icon">{insight.icon}</span>
+                <div className="insight-content">
+                  <strong>{insight.title}</strong>
+                  <br />
+                  <span className="insight-text">{insight.text}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        {/* Reports */}
+        <Card elevation="elevated">
+          <div className="card-title">📄 Reports</div>
+          <div className="reports-list">
+            {reports.map((report, idx) => (
+              <div key={idx} className="report-row">
+                <span className="report-icon">{report.icon}</span>
+                <div className="report-info">
+                  <div className="report-title">{report.title}</div>
+                  <div className="report-sub">{report.sub}</div>
+                </div>
+                <Button variant="secondary" size="sm">
+                  {report.status}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
     </div>
   );
 }
 
 /**
- * System Section
+ * Analytics Tab - Demand Prediction and Success Metrics
  */
-function SystemSection() {
+function AnalyticsTab() {
+  const metrics = [
+    { label: 'Reduction in Food Waste', target: '25%', current: '18%', progress: 72 },
+    { label: 'Financial Loss Reduction', target: '30%', current: '15%', progress: 50 },
+    { label: 'Patient Satisfaction Score', target: '4.5★', current: '4.2★', progress: 93 },
+    { label: 'Meal Consumption Rate', target: '85%', current: '78%', progress: 92 },
+    { label: 'Order Compliance Rate', target: '90%', current: '83%', progress: 92 },
+  ];
+
   return (
-    <div className="system-section">
-      <h2 className="section-title">🛠️ System Settings</h2>
-
-      <div className="settings-grid">
-        <Card className="setting-card">
-          <h4 className="setting-title">Database Maintenance</h4>
-          <p className="setting-description">Optimize database and cleanup old data</p>
-          <Button variant="secondary">Run Maintenance</Button>
-        </Card>
-
-        <Card className="setting-card">
-          <h4 className="setting-title">System Backup</h4>
-          <p className="setting-description">Create system backup for recovery</p>
-          <Button variant="secondary">Create Backup</Button>
-        </Card>
-
-        <Card className="setting-card">
-          <h4 className="setting-title">Logs & Monitoring</h4>
-          <p className="setting-description">View system logs and monitoring data</p>
-          <Button variant="secondary">View Logs</Button>
-        </Card>
-
-        <Card className="setting-card">
-          <h4 className="setting-title">Email Configuration</h4>
-          <p className="setting-description">Configure email settings for notifications</p>
-          <Button variant="secondary">Configure</Button>
-        </Card>
+    <div className="admin-section">
+      <div className="section-header">
+        <h2>
+          Deep <span className="gold-accent">Analytics</span>
+        </h2>
+        <p>Patient satisfaction, meal performance, and demand predictions</p>
       </div>
 
-      <Card className="system-info">
-        <h3 className="card-title">📈 System Information</h3>
-        <div className="info-grid">
-          <div className="info-item">
-            <span className="info-label">System Version:</span>
-            <span className="info-value">1.0.0</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Last Update:</span>
-            <span className="info-value">2026-04-28</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Database Size:</span>
-            <span className="info-value">128 MB</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Active Users:</span>
-            <span className="info-value">15</span>
-          </div>
+      {/* Stats Grid */}
+      <div className="kpi-grid">
+        <div className="stat-card teal">
+          <div className="stat-num">4.2 ★</div>
+          <div className="stat-label">Avg Patient Meal Rating</div>
+          <div className="stat-delta up">↑ +0.4 vs last month</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-num">83%</div>
+          <div className="stat-label">Meal Selection Compliance</div>
+          <div className="stat-delta up">↑ +11% since launch</div>
+        </div>
+        <div className="stat-card red">
+          <div className="stat-num">$1,240</div>
+          <div className="stat-label">Monthly Waste Cost Saved</div>
+          <div className="stat-delta up">↑ Est. savings vs baseline</div>
+        </div>
+      </div>
+
+      {/* Demand Prediction */}
+      <Card elevation="elevated">
+        <div className="card-title">🔮 Tomorrow's Demand Prediction</div>
+        <p className="card-description">
+          AI-assisted forecast based on current pre-orders + historical patterns
+        </p>
+
+        <div className="table-wrapper">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Meal</th>
+                <th>Pre-orders</th>
+                <th>Predicted Total</th>
+                <th>Confidence</th>
+                <th>Rec. Produce</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PRODUCTION.map((p) => {
+                const total = p.small + p.normal + p.large;
+                const pred = Math.round(total * (1 + Math.random() * 0.15));
+                const conf = Math.round(80 + Math.random() * 15);
+                return (
+                  <tr key={p.name}>
+                    <td>
+                      {p.icon} {p.name}
+                    </td>
+                    <td>{total}</td>
+                    <td>
+                      <strong>{pred}</strong>
+                    </td>
+                    <td>
+                      <Badge
+                        variant={conf > 90 ? 'success' : conf > 80 ? 'warning' : 'error'}
+                      >
+                        {conf}%
+                      </Badge>
+                    </td>
+                    <td className="teal-text">
+                      <strong>{Math.round(pred * 1.05)}</strong>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {/* Success Metrics */}
+      <Card elevation="elevated">
+        <div className="card-title">🏆 Success Metrics</div>
+
+        <div className="metrics-list">
+          {metrics.map((m, idx) => (
+            <div key={idx} className="metric-item">
+              <div className="metric-header">
+                <span className="metric-label">{m.label}</span>
+                <span className="metric-values">
+                  {m.current} / <strong>{m.target}</strong>
+                </span>
+              </div>
+              <div className="progress-bar">
+                <div
+                  className={`progress-fill ${m.progress > 85 ? 'success' : 'gold'}`}
+                  style={{ width: `${m.progress}%` }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
     </div>

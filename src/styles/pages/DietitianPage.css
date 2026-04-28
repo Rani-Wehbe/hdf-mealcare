@@ -1,236 +1,436 @@
-/* ===== DIETITIAN PAGE ===== */
 .dietitian-page {
-  animation: fadeIn 0.3s ease;
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.dietitian-page__grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-}
-
-.tabs {
+.dietitian-tabs {
   display: flex;
   gap: 12px;
-  border-bottom: 2px solid var(--hdf-light);
   margin-bottom: 24px;
-  overflow-x: auto;
+  border-bottom: 2px solid var(--hdf-light);
+  padding-bottom: 12px;
 }
 
-.tab-button {
-  padding: 12px 20px;
+.tab-btn {
+  padding: 10px 16px;
   border: none;
   background: transparent;
   color: var(--hdf-mid);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.22s ease;
   border-bottom: 3px solid transparent;
-  white-space: nowrap;
+  position: relative;
+  bottom: -14px;
 }
 
-.tab-button:hover {
+.tab-btn:hover {
   color: var(--hdf-navy);
 }
 
-.tab-button.active {
+.tab-btn.active {
   color: var(--hdf-navy);
   border-bottom-color: var(--hdf-gold);
 }
 
-.section-title {
+.dietitian-section {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-header {
+  margin-bottom: 24px;
+}
+
+.section-header h2 {
   font-family: var(--font-display);
-  font-size: 24px;
+  font-size: 28px;
   color: var(--hdf-navy);
-  margin: 0 0 20px 0;
-  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-.meals-plans-section {
-  margin-top: 24px;
+.gold-accent {
+  color: var(--hdf-gold);
 }
 
-.plans-grid {
+.section-header p {
+  font-size: 14px;
+  color: var(--hdf-mid);
+}
+
+/* Alert Bar */
+.alert-bar {
+  background: rgba(184, 147, 58, 0.15);
+  border-left: 4px solid var(--hdf-gold);
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: var(--hdf-navy);
+}
+
+.alert-bar.danger {
+  background: rgba(140, 31, 40, 0.1);
+  border-left-color: #8c1f28;
+}
+
+.alert-bar span {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.content-grid-2 {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
-.plan-card {
-  padding: 24px;
+@media (max-width: 1024px) {
+  .content-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--hdf-navy);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-description {
+  font-size: 12px;
+  color: var(--hdf-mid);
+  margin-bottom: 12px;
+}
+
+/* Approval Queue */
+.approval-queue {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.plan-card__header {
+.approval-item {
+  background: var(--hdf-cream);
+  border-left: 4px solid var(--hdf-gold);
+  border-radius: var(--radius);
+  padding: 12px;
+  transition: all 0.22s ease;
+}
+
+.approval-item:hover {
+  box-shadow: 0 2px 8px rgba(27, 43, 75, 0.08);
+  transform: translateX(4px);
+}
+
+.approval-item.restricted {
+  border-left-color: #8c1f28;
+  background: rgba(140, 31, 40, 0.08);
+}
+
+.approval-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 8px;
   gap: 12px;
-  margin-bottom: 16px;
 }
 
-.plan-card__patient {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
+.approval-patient {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approval-patient strong {
+  font-size: 13px;
   color: var(--hdf-navy);
-  margin: 0 0 4px 0;
 }
 
-.plan-card__type {
-  font-size: 13px;
+.approval-room {
+  font-size: 11px;
   color: var(--hdf-mid);
-  margin: 0;
 }
 
-.plan-card__details {
-  display: grid;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--hdf-light);
-}
-
-.detail {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: 12px;
+.approval-request {
   font-size: 13px;
+  font-weight: 500;
+  color: var(--hdf-navy);
+  margin-bottom: 6px;
 }
 
-.detail-label {
+.approval-meta {
+  font-size: 11px;
   color: var(--hdf-mid);
+  margin-bottom: 8px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Trend Chart */
+.trend-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 160px;
+  gap: 12px;
+  padding: 12px;
+  background: var(--hdf-cream);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+}
+
+.trend-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.trend-bar-wrapper {
+  display: flex;
+  align-items: flex-end;
+  height: 120px;
+  width: 100%;
+  justify-content: center;
+}
+
+.trend-bar {
+  width: 24px;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.22s ease;
+}
+
+.trend-bar:hover {
+  opacity: 0.8;
+  transform: scaleY(1.05);
+}
+
+.trend-label {
+  font-size: 11px;
+  color: var(--hdf-mid);
+  font-weight: 500;
+}
+
+/* Patient List */
+.patient-list-container {
+  overflow-x: auto;
+}
+
+.patient-row-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1.2fr;
+  gap: 12px;
+  padding: 12px;
+  background: var(--hdf-cream);
+  border-bottom: 2px solid var(--hdf-light);
   font-weight: 600;
+  font-size: 12px;
+  color: var(--hdf-navy);
+  position: sticky;
+  top: 0;
 }
 
-.detail-value {
+.patient-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 1.2fr;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--hdf-light);
+  align-items: center;
+  font-size: 13px;
+  transition: all 0.22s ease;
+}
+
+.patient-row:hover {
+  background: var(--hdf-cream);
+}
+
+.col-patient {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--hdf-navy);
   font-weight: 500;
 }
 
-.plan-card__actions {
-  display: flex;
-  gap: 12px;
-  margin-top: auto;
+.alert-indicator {
+  font-size: 14px;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-.templates-section {
-  margin-top: 24px;
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-}
-
-.template-card {
-  padding: 20px;
-}
-
-.template-card__name {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
+.col-room,
+.col-diet,
+.col-meal {
   color: var(--hdf-navy);
-  margin: 0 0 12px 0;
+  font-weight: 500;
 }
 
-.template-card__info {
+.col-appetite {
+  text-align: center;
+}
+
+.appetite-mini {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.col-action {
+  text-align: center;
+}
+
+/* Menu Items */
+.menu-items-list {
   display: flex;
-  gap: 16px;
-  font-size: 13px;
-  color: var(--hdf-mid);
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.ingredients-section {
-  margin-top: 24px;
+.menu-item {
+  background: white;
+  border: 1px solid var(--hdf-light);
+  border-radius: var(--radius);
+  padding: 12px;
+  transition: all 0.22s ease;
 }
 
-.ingredients-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+.menu-item:hover {
+  box-shadow: 0 2px 8px rgba(27, 43, 75, 0.08);
+  border-color: var(--hdf-gold);
 }
 
-.ingredient-card {
-  padding: 20px;
+.menu-item.restricted {
+  border-color: #8c1f28;
+  background: rgba(140, 31, 40, 0.04);
 }
 
-.ingredient-card__header {
+.menu-item-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 8px;
   gap: 12px;
-  margin-bottom: 12px;
 }
 
-.ingredient-card__name {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 600;
+.menu-item-title {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.menu-emoji {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.menu-info h4 {
+  font-size: 13px;
   color: var(--hdf-navy);
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.menu-info p {
+  font-size: 12px;
+  color: var(--hdf-mid);
   margin: 0;
 }
 
-.ingredient-card__unit {
-  font-size: 12px;
-  color: var(--hdf-mid);
-  margin: 0 0 12px 0;
+.menu-item-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
 }
 
-.guidelines-card {
-  margin-top: 24px;
-  padding: 24px;
+.menu-tag {
+  background: var(--hdf-light);
+  color: var(--hdf-navy);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
 }
 
-.guidelines-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+/* Diet Templates */
+.diet-templates {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.guideline-item {
-  display: grid;
-  grid-template-columns: 1fr;
+.template-item {
+  background: white;
+  border: 1px solid var(--hdf-light);
+  border-radius: var(--radius);
+  padding: 12px;
+  transition: all 0.22s ease;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.guideline-label {
-  font-size: 12px;
-  color: var(--hdf-mid);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  font-weight: 600;
+.template-item:hover {
+  box-shadow: 0 2px 8px rgba(27, 43, 75, 0.08);
+  border-color: var(--hdf-teal);
 }
 
-.guideline-value {
-  font-size: 16px;
+.template-name {
+  font-size: 13px;
   font-weight: 600;
   color: var(--hdf-navy);
-  font-family: var(--font-display);
 }
 
-@media (max-width: 768px) {
-  .tabs {
-    gap: 8px;
-  }
+.template-desc {
+  font-size: 12px;
+  color: var(--hdf-mid);
+}
 
-  .tab-button {
-    padding: 10px 14px;
-    font-size: 12px;
-  }
-
-  .plans-grid,
-  .templates-grid,
-  .ingredients-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .guidelines-content {
-    grid-template-columns: 1fr 1fr;
-  }
+.template-meta {
+  font-size: 11px;
+  color: var(--hdf-mid);
+  font-style: italic;
 }
