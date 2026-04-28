@@ -366,8 +366,13 @@ function AlertItem({ icon, title, description }) {
  * Meal Card Component
  */
 function MealCard({ meal, statusBadge, onView, onSelectPortion }) {
-  const calorieColor =
-    meal.calories > 300 ? '#8C1F28' : meal.calories > 200 ? '#B8933A' : '#2A7B7B';
+  const getCalorieColor = () => {
+    const style = getComputedStyle(document.documentElement);
+    if (meal.calories > 300) return style.getPropertyValue('--hdf-red').trim();
+    if (meal.calories > 200) return style.getPropertyValue('--hdf-gold').trim();
+    return style.getPropertyValue('--hdf-teal').trim();
+  };
+  const calorieColor = getCalorieColor();
 
   return (
     <Card className={`meal-card meal-card--${meal.status}`}>

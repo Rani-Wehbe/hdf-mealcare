@@ -82,7 +82,7 @@
 .live-dot {
   width: 8px;
   height: 8px;
-  background: #4ade80;
+  background: var(--hdf-teal);
   border-radius: 50%;
   animation: pulse 2s ease-in-out infinite;
 }
@@ -121,7 +121,7 @@
   font-family: 'Courier New', monospace;
   font-size: 32px;
   font-weight: 600;
-  color: #4ade80;
+color: var(--hdf-teal);
 }
 
 .kitchen-info {
@@ -260,7 +260,7 @@
 }
 
 .timeline-step.done {
-  border-left-color: #4ade80;
+  border-left-color: var(--hdf-teal);
 }
 
 .timeline-step.active {

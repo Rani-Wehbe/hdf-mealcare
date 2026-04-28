@@ -68,8 +68,8 @@
 }
 
 .btn--danger:hover:not(:disabled) {
-  background: #6d1821;
-  border-color: #6d1821;
+  background: var(--hdf-red);
+  border-color: var(--hdf-red);
   transform: translateY(-2px);
   box-shadow: var(--shadow);
 }

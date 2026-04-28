@@ -86,7 +86,7 @@
 
 .alert-bar.danger {
   background: rgba(140, 31, 40, 0.1);
-  border-left-color: #8c1f28;
+  border-left-color: var(--hdf-red);
 }
 
 .alert-bar span {
@@ -145,7 +145,7 @@
 }
 
 .approval-item.restricted {
-  border-left-color: #8c1f28;
+  border-left-color: var(--hdf-red);
   background: rgba(140, 31, 40, 0.08);
 }
 
@@ -343,7 +343,7 @@
 }
 
 .menu-item.restricted {
-  border-color: #8c1f28;
+  border-color: var(--hdf-red);
   background: rgba(140, 31, 40, 0.04);
 }
 

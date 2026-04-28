@@ -22,10 +22,10 @@
 
 /* ===== DARK MODE ===== */
 :root.dark-mode {
-  --hdf-navy:    #F7F3EE;   /* cream becomes primary text */
+  --hdf-navy:    #ADD8E6;   /* light blue for primary text */
   --hdf-cream:   #1B2B4B;   /* navy becomes background */
-  --hdf-mid:     #D9E4F0;   /* light becomes secondary text */
-  --hdf-light:   #2A3D5A;   /* darker shade for subtle elements */
+  --hdf-mid:     #B0B0B0;   /* gray for secondary text */
+  --hdf-light:   #1F2A40;   /* darker shade for cards/boxes */
   --hdf-warm:    #1F3244;   /* darker warm */
   --hdf-gold:    #D4A960;   /* lighter gold for visibility */
   --hdf-red:     #C73D47;   /* lighter red */

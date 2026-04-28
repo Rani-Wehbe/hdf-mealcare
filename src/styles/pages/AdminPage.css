@@ -122,11 +122,11 @@
 .stat-delta {
   font-size: 12px;
   font-weight: 500;
-  color: #4ade80;
+  color: var(--hdf-teal);
 }
 
 .stat-delta.up {
-  color: #4ade80;
+  color: var(--hdf-teal);
 }
 
 /* Content Grid */
@@ -220,15 +220,15 @@
 }
 
 .indicator.red {
-  color: #8c1f28;
+color: var(--hdf-red);
 }
 
 .indicator.gold {
-  color: #b8933a;
+  color: var(--hdf-gold);
 }
 
 .indicator.green {
-  color: #2a7b7b;
+  color: var(--hdf-teal);
 }
 
 .breakdown-value {
@@ -245,17 +245,17 @@
 
 .progress-fill {
   height: 100%;
-  background: #2a7b7b;
+  background: var(--hdf-teal);
   border-radius: 3px;
   transition: width 0.3s ease;
 }
 
 .progress-fill.gold {
-  background: #b8933a;
+  background: var(--hdf-gold);
 }
 
 .progress-fill.success {
-  background: #2a7b7b;
+  background: var(--hdf-teal);
 }
 
 /* Chart Area */
@@ -322,12 +322,12 @@
 }
 
 .insight-item.danger {
-  border-left-color: #8c1f28;
+  border-left-color: var(--hdf-red);
   background: rgba(140, 31, 40, 0.08);
 }
 
 .insight-item.success {
-  border-left-color: #2a7b7b;
+  border-left-color: var(--hdf-teal);
   background: rgba(42, 123, 123, 0.08);
 }
 
@@ -426,7 +426,7 @@
 }
 
 .teal-text {
-  color: #2a7b7b;
+  color: var(--hdf-teal);
 }
 
 /* Metrics */

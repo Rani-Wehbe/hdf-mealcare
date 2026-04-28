@@ -11,8 +11,8 @@ export function ThemeProvider({ children }) {
     const saved = localStorage.getItem('hdf-theme');
     if (saved) return saved === 'dark';
     
-    // Check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    // Default to light mode (disable system preference check)
+    return false;       //return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {

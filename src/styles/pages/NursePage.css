@@ -156,14 +156,14 @@
 }
 
 .patient-card.alert {
-  border-color: #8c1f28;
+  border-color: var(--hdf-red);
 }
 
 .alert-badge {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: #8c1f28;
+  background: var(--hdf-red);
   color: white;
   padding: 4px 8px;
   border-radius: 4px;
@@ -228,15 +228,15 @@
 }
 
 .stat-value.ordered {
-  color: #2a7b7b;
+  color: var(--hdf-teal);
 }
 
 .stat-value.pending {
-  color: #b8933a;
+  color: var(--hdf-gold);
 }
 
 .stat-value.none {
-  color: #8c1f28;
+color: var(--hdf-red);
 }
 
 .appetite-visual {
@@ -416,12 +416,12 @@
 }
 
 .alert-dot.critical {
-  background: #8c1f28;
+  background: var(--hdf-red);
   animation: pulse-alert 2s ease-in-out infinite;
 }
 
 .alert-dot.moderate {
-  background: #b8933a;
+  background: var(--hdf-gold);
 }
 
 @keyframes pulse-alert {
