@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import '../styles/components/PageHeader.css';
+import '../../styles/components/PageHeader.css';
 
 /**
  * PageHeader Component
@@ -27,11 +26,3 @@ export default function PageHeader({
     </div>
   );
 }
-
-PageHeader.propTypes = {
-  title: PropTypes.string.isRequired,
-  subtitle: PropTypes.string,
-  icon: PropTypes.node,
-  actions: PropTypes.node,
-  className: PropTypes.string,
-};

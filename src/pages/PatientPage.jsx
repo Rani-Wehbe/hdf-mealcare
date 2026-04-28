@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import PageHeader from '../layout/PageHeader';
-import Card from '../ui/Card';
-import Badge from '../ui/Badge';
-import Button from '../ui/Button';
-import { useApp } from '../../context/AppContext';
-import { MEALS, getRandomMotivation, DEMO_USERS } from '../../data/demo';
-import '../../styles/pages/PatientPage.css';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import { useApp } from '../context/AppContext';
+import { MEALS, getRandomMotivation, DEMO_USERS } from '../data/demo';
+import '../styles/pages/PatientPage.css';
 
 /**
  * Patient Dashboard Page

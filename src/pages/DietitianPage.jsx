@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import PageHeader from '../layout/PageHeader';
-import Card from '../ui/Card';
-import Badge from '../ui/Badge';
-import Button from '../ui/Button';
-import '../../styles/pages/DietitianPage.css';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import '../styles/pages/DietitianPage.css';
 
 /**
  * Dietitian Dashboard Page

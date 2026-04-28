@@ -1,9 +1,11 @@
-import PropTypes from 'prop-types';
-import '../styles/components/Button.css';
+import '../../styles/components/Button.css';
 
 /**
  * Button Component
  * Reusable button with multiple variants
+ * 
+ * @param {string} variant - 'primary' | 'secondary' | 'danger' | 'ghost'
+ * @param {string} size - 'sm' | 'md' | 'lg'
  */
 export default function Button({
   children,
@@ -25,12 +27,3 @@ export default function Button({
     </button>
   );
 }
-
-Button.propTypes = {
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(['primary', 'secondary', 'danger', 'ghost']),
-  size: PropTypes.oneOf(['sm', 'md', 'lg']),
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func,
-  className: PropTypes.string,
-};

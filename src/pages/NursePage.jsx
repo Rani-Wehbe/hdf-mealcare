@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PageHeader from '../layout/PageHeader';
-import Card from '../ui/Card';
-import Badge from '../ui/Badge';
-import Button from '../ui/Button';
-import { PATIENTS } from '../../data/demo';
-import '../../styles/pages/NursePage.css';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import { PATIENTS } from '../data/demo';
+import '../styles/pages/NursePage.css';
 
 /**
  * Nurse Dashboard Page

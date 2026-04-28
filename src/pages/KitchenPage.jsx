@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import PageHeader from '../layout/PageHeader';
-import Card from '../ui/Card';
-import Badge from '../ui/Badge';
-import Button from '../ui/Button';
-import { useAsync } from '../../hooks';
-import { mockApiKitchenOrders } from '../../utils/api';
-import '../../styles/pages/KitchenPage.css';
+import PageHeader from '../components/layout/PageHeader';
+import Card from '../components/ui/Card';
+import Badge from '../components/ui/Badge';
+import Button from '../components/ui/Button';
+import { useAsync } from '../hooks';
+import { mockApiKitchenOrders } from '../utils/api';
+import '../styles/pages/KitchenPage.css';
 
 /**
  * Kitchen Dashboard Page

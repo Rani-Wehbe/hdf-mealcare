@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
-import '../styles/components/Badge.css';
+import '../../styles/components/Badge.css';
 
 /**
  * Badge Component
  * Small label for status/tags
+ * 
+ * @param {string} variant - 'default' | 'success' | 'warning' | 'error' | 'info'
  */
 export default function Badge({
   children,
@@ -20,9 +21,3 @@ export default function Badge({
     </span>
   );
 }
-
-Badge.propTypes = {
-  children: PropTypes.node.isRequired,
-  variant: PropTypes.oneOf(['default', 'success', 'warning', 'error', 'info']),
-  className: PropTypes.string,
-};

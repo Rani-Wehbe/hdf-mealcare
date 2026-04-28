@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
-import '../styles/components/Card.css';
+import '../../styles/components/Card.css';
 
 /**
  * Card Component
  * Flexible container with consistent styling
+ * 
+ * @param {string} elevation - 'flat' | 'default' | 'elevated'
  */
 export default function Card({
   children,
@@ -20,9 +21,3 @@ export default function Card({
     </div>
   );
 }
-
-Card.propTypes = {
-  children: PropTypes.node.isRequired,
-  className: PropTypes.string,
-  elevation: PropTypes.oneOf(['flat', 'default', 'elevated']),
-};
