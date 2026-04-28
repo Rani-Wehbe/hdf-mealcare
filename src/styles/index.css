@@ -20,6 +20,22 @@
   --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
 }
 
+/* ===== DARK MODE ===== */
+:root.dark-mode {
+  --hdf-navy:    #F7F3EE;   /* cream becomes primary text */
+  --hdf-cream:   #1B2B4B;   /* navy becomes background */
+  --hdf-mid:     #D9E4F0;   /* light becomes secondary text */
+  --hdf-light:   #2A3D5A;   /* darker shade for subtle elements */
+  --hdf-warm:    #1F3244;   /* darker warm */
+  --hdf-gold:    #D4A960;   /* lighter gold for visibility */
+  --hdf-red:     #C73D47;   /* lighter red */
+  --hdf-teal:    #4A9B9B;   /* lighter teal */
+  
+  /* Shadows are lighter in dark mode */
+  --shadow: 0 4px 24px rgba(0,0,0,0.30);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.40);
+}
+
 *, *::before, *::after { 
   box-sizing: border-box; 
   margin: 0; 

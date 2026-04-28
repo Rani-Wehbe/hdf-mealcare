@@ -6,6 +6,7 @@ import DietitianPage from '../pages/DietitianPage';
 import KitchenPage from '../pages/KitchenPage';
 import AdminPage from '../pages/AdminPage';
 import Button from './ui/Button';
+import ThemeToggle from './ThemeToggle';
 import '../styles/Dashboard.css';
 
 export default function Dashboard() {
@@ -30,6 +31,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
+      <ThemeToggle />
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-left">
