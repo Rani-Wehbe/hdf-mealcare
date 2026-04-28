@@ -1,212 +1,148 @@
 /**
- * Animation utilities using anime.js
+ * Animation utilities using Framer Motion
  * Centralized animation configuration and helpers
  */
-import anime from 'anime';
 
 /**
  * Smooth fade-in animation
  */
-export const animateFadeIn = (element, options = {}) => {
-  return anime({
-    targets: element,
-    opacity: [0, 1],
-    duration: options.duration || 300,
-    easing: options.easing || 'easeOutQuad',
-  });
+export const fadeInVariants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.3 } },
 };
 
 /**
  * Smooth fade-out animation
  */
-export const animateFadeOut = (element, options = {}) => {
-  return anime({
-    targets: element,
-    opacity: [1, 0],
-    duration: options.duration || 300,
-    easing: options.easing || 'easeOutQuad',
-  });
+export const fadeOutVariants = {
+  visible: { opacity: 1 },
+  hidden: { opacity: 0, transition: { duration: 0.3 } },
 };
 
 /**
  * Slide down animation (for dropdowns, accordion)
  */
-export const animateSlideDown = (element, options = {}) => {
-  const maxHeight = element.scrollHeight;
-  return anime({
-    targets: element,
-    height: [0, maxHeight],
-    opacity: [0, 1],
-    paddingTop: [0, 12],
-    paddingBottom: [0, 12],
-    marginTop: [0, 12],
-    marginBottom: [0, 12],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeOutQuart',
-    complete: () => {
-      element.style.height = 'auto';
-    },
-  });
+export const slideDownVariants = {
+  hidden: { height: 0, opacity: 0, marginTop: 0 },
+  visible: {
+    height: 'auto',
+    opacity: 1,
+    marginTop: 12,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
 };
 
 /**
  * Slide up animation (for accordion collapse)
  */
-export const animateSlideUp = (element, options = {}) => {
-  return anime({
-    targets: element,
-    height: [element.scrollHeight, 0],
-    opacity: [1, 0],
-    paddingTop: [12, 0],
-    paddingBottom: [12, 0],
-    marginTop: [12, 0],
-    marginBottom: [12, 0],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeOutQuart',
-  });
+export const slideUpVariants = {
+  visible: { height: 'auto', opacity: 1, marginTop: 12 },
+  hidden: {
+    height: 0,
+    opacity: 0,
+    marginTop: 0,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
 };
 
 /**
  * Scale bounce animation (for modals, cards)
  */
-export const animateScaleBounce = (element, options = {}) => {
-  return anime({
-    targets: element,
-    scale: [0.9, 1],
-    opacity: [0, 1],
-    duration: options.duration || 500,
-    easing: options.easing || 'easeOutElastic(1, 0.6)',
-  });
+export const scaleBounceVariants = {
+  hidden: { scale: 0.9, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: 'spring',
+      stiffness: 200,
+      damping: 15,
+      duration: 0.5,
+    },
+  },
 };
 
 /**
  * Slide in from left animation
  */
-export const animateSlideInLeft = (element, options = {}) => {
-  return anime({
-    targets: element,
-    translateX: [-30, 0],
-    opacity: [0, 1],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeOutQuad',
-  });
+export const slideInLeftVariants = {
+  hidden: { x: -30, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.4 } },
 };
 
 /**
  * Slide in from right animation
  */
-export const animateSlideInRight = (element, options = {}) => {
-  return anime({
-    targets: element,
-    translateX: [30, 0],
-    opacity: [0, 1],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeOutQuad',
-  });
-};
-
-/**
- * Shake animation (for errors, alerts)
- */
-export const animateShake = (element, options = {}) => {
-  return anime({
-    targets: element,
-    translateX: [0, -10, 10, -10, 10, 0],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeInOutQuad',
-  });
+export const slideInRightVariants = {
+  hidden: { x: 30, opacity: 0 },
+  visible: { x: 0, opacity: 1, transition: { duration: 0.4 } },
 };
 
 /**
  * Pulse animation (for alerts, notifications)
  */
-export const animatePulse = (element, options = {}) => {
-  return anime({
-    targets: element,
+export const pulseVariants = {
+  hidden: { scale: 1 },
+  animate: {
     scale: [1, 1.05, 1],
-    duration: options.duration || 600,
-    easing: options.easing || 'easeInOutQuad',
-    loop: options.loop ?? true,
-  });
-};
-
-/**
- * Rotate animation
- */
-export const animateRotate = (element, options = {}) => {
-  return anime({
-    targets: element,
-    rotate: options.rotate || 360,
-    duration: options.duration || 600,
-    easing: options.easing || 'easeInOutQuad',
-  });
-};
-
-/**
- * Color transition animation
- */
-export const animateColor = (element, fromColor, toColor, options = {}) => {
-  return anime({
-    targets: element,
-    backgroundColor: [fromColor, toColor],
-    duration: options.duration || 400,
-    easing: options.easing || 'easeInOutQuad',
-  });
-};
-
-/**
- * Number counter animation
- */
-export const animateCounter = (element, targetValue, options = {}) => {
-  const obj = { value: 0 };
-  return anime({
-    targets: obj,
-    value: targetValue,
-    duration: options.duration || 800,
-    easing: options.easing || 'easeOutQuad',
-    update: () => {
-      element.textContent = Math.round(obj.value);
+    transition: {
+      duration: 0.6,
+      repeat: Infinity,
+      repeatType: 'loop',
     },
-  });
+  },
 };
 
 /**
- * Stagger multiple elements
+ * Stagger container for multiple elements
  */
-export const animateStagger = (elements, animation, options = {}) => {
-  return anime.timeline().add({
-    targets: elements,
-    duration: options.duration || 400,
-    easing: options.easing || 'easeOutQuad',
-    delay: anime.stagger(options.staggerDelay || 50),
-    ...animation,
-  });
+export const staggerContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.2,
+    },
+  },
 };
 
 /**
- * Custom animation for expanding/collapsing content
+ * Stagger item
  */
-export const toggleExpandContent = (element, isExpanding, options = {}) => {
-  if (isExpanding) {
-    return animateSlideDown(element, options);
-  } else {
-    return animateSlideUp(element, options);
-  }
+export const staggerItemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.4 },
+  },
+};
+
+/**
+ * Bounce animation
+ */
+export const bounceVariants = {
+  animate: {
+    y: [0, -10, 0],
+    transition: {
+      duration: 0.6,
+      repeat: Infinity,
+      repeatType: 'loop',
+    },
+  },
 };
 
 export default {
-  animateFadeIn,
-  animateFadeOut,
-  animateSlideDown,
-  animateSlideUp,
-  animateScaleBounce,
-  animateSlideInLeft,
-  animateSlideInRight,
-  animateShake,
-  animatePulse,
-  animateRotate,
-  animateColor,
-  animateCounter,
-  animateStagger,
-  toggleExpandContent,
+  fadeInVariants,
+  fadeOutVariants,
+  slideDownVariants,
+  slideUpVariants,
+  scaleBounceVariants,
+  slideInLeftVariants,
+  slideInRightVariants,
+  pulseVariants,
+  staggerContainerVariants,
+  staggerItemVariants,
+  bounceVariants,
 };

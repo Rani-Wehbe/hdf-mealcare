@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { animateSlideDown, animateSlideUp } from '../utils/animations';
+import { motion, AnimatePresence } from 'framer-motion';
+import { slideDownVariants } from '../utils/animations';
 import './Dropdown.css';
 
 /**
- * Dropdown Component with smooth animations
+ * Dropdown Component with smooth animations using Framer Motion
  */
 export function Dropdown({
   trigger,
@@ -13,13 +14,6 @@ export function Dropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
-  const contentRef = useRef(null);
-
-  useEffect(() => {
-    if (isOpen && contentRef.current) {
-      animateSlideDown(contentRef.current, { duration: 250 });
-    }
-  }, [isOpen]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -39,42 +33,39 @@ export function Dropdown({
     setIsOpen(false);
   };
 
-  const handleToggle = async () => {
-    if (isOpen && contentRef.current) {
-      await animateSlideUp(contentRef.current, { duration: 250 });
-    }
-    setIsOpen(!isOpen);
-  };
-
   return (
     <div className="dropdown" ref={containerRef}>
       <button
         className={`dropdown-trigger ${isOpen ? 'active' : ''}`}
-        onClick={handleToggle}
+        onClick={() => setIsOpen(!isOpen)}
       >
         {trigger}
       </button>
 
-      {isOpen && (
-        <div
-          className={`dropdown-content ${align}`}
-          ref={contentRef}
-          style={{ height: 0, overflow: 'hidden' }}
-        >
-          <div className="dropdown-list">
-            {items.map((item, idx) => (
-              <button
-                key={idx}
-                className="dropdown-item"
-                onClick={() => handleItemClick(item)}
-              >
-                {item.icon && <span className="dropdown-item-icon">{item.icon}</span>}
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className={`dropdown-content ${align}`}
+            variants={slideDownVariants}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+          >
+            <div className="dropdown-list">
+              {items.map((item, idx) => (
+                <button
+                  key={idx}
+                  className="dropdown-item"
+                  onClick={() => handleItemClick(item)}
+                >
+                  {item.icon && <span className="dropdown-item-icon">{item.icon}</span>}
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
