@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { ROLES, getDemoCredentials } from '../data/demo';
-import ThemeToggle from './ThemeToggle';
+// import ThemeToggle from './ThemeToggle';
 import '../styles/Login.css';
 
 const roles = [
@@ -23,7 +23,7 @@ export default function Login() {
 
   return (
     <div className="login-screen">
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
       <div className="login-card">
         <div className="login-logo">
           <img 
